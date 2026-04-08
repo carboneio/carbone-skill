@@ -25,9 +25,8 @@ Works with any platform that supports the open [Agent Skills](https://agentskill
 
 ### Claude.ai
 
-1. Go to **Settings → Skills**
-2. Click **Add skill** and upload `carbone.skill`
-3. Restart Claude
+1. Go to **Customize → Skills** (at claude.ai/customize/skills)
+2. Click **+** → **Upload a skill** and upload `carbone.skill`
 
 ### Claude Code
 
