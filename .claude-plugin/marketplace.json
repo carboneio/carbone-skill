@@ -1,0 +1,22 @@
+{
+  "name": "carbone-skill",
+  "owner": {
+    "name": "Carbone",
+    "email": "support@carbone.io"
+  },
+  "metadata": {
+    "description": "Official Carbone skill — universal templating syntax, formatters, loops, conditions, and HTML/Markdown reference for AI assistants",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "carbone",
+      "description": "Enables AI to build fully-featured Carbone templates using verified syntax: tags, loops, conditions, formatters, HTML/Markdown output, and embedding tags into AI-generated DOCX, XLSX, and PPTX files.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./carbone"
+      ]
+    }
+  ]
+}
