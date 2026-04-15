@@ -1,19 +1,20 @@
 ---
 name: carbone
 description: >
-  Expert assistant for the Carbone Universal Templating Language. Use this skill when the user:
+  Use this skill when the user:
   - Asks how to write a Carbone tag, loop, condition, or formatter
   - Wants to build or design a template (invoice, report, contract, spreadsheet, presentation)
   - Asks to validate, fix, or explain Carbone syntax, or map JSON data into a template
   - Mentions Carbone, {d.}, {c.}, formatters, or document generation from JSON
-  - Uses terms like "Carbone tag", "aggSum", "hideBegin", "drop row", ":chart", "carbone-pdf-options", "Markdown to PDF", "HTML to PDF"
+  - Uses terms like "Carbone tag", "Carbone placeholder", "Carbone field", "document placeholder", "{d.", "{c.", "fill a template with data", "generate a report from data", "Markdown to PDF", "HTML to PDF"
   - Asks about HTML templates (CSS injection, charts, headers/footers, PDF options) or Markdown templates (loops in tables, DOCX/PDF output)
   - Is generating a DOCX, XLSX, or PPTX and needs to embed Carbone tags
+  - Wants to generate any document (PDF, Word, Excel, PowerPoint, HTML, Markdown) from JSON data — even if they don't mention "Carbone" by name
   Always consult this skill before answering Carbone questions. NEVER invent syntax.
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.1.0"
+  version: "1.1.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
 
@@ -351,11 +352,34 @@ Move shapes/images on X or Y axis in ODP/PPTX/ODT:
 ```
 Units: `cm`, `mm`, `inch`, `pt`. Write inside the shape's alt text or inside the shape itself.
 
-### 8n. Dynamic Forms — ODT Text Fields and Checkboxes (ENTERPRISE, v3.3+)
+### 8k. SVG templates
+SVG files can be used as Carbone input templates. Write tags inside HTML comments (`<!-- {d.value:svgUpdate(...)} -->`). Use `:svgUpdate(attrName, selectorValue, selectorType)` to update attributes, or `:svgSelectiveUpdate` to select and inject. Full syntax → `references/advanced-features.md`.
+
+### 8l. Dynamic Forms — ODT Text Fields and Checkboxes (ENTERPRISE, v3.3+)
 ODT editable text fields and clickable checkboxes (LibreOffice only). Checkbox alternatives that work in any format: `{d.value:ifEQ(true):show(☑):elseShow(☐)}` (unicode) or emoji. Full setup steps → `references/advanced-features.md`.
 
-### 8o. Native Charts (ENTERPRISE, v4+)
+### 8m. Native Charts (ENTERPRISE, v4+)
 Three chart types: native DOCX charts (loop tags in the embedded Excel sheet), ODT/LibreOffice charts (`{bindChart(refValue) = d.tag}` in the Data Table), and ECharts via `:chart` formatter in the alt text of a placeholder image (all formats). For full syntax and examples → read `references/advanced-features.md`.
+
+### 8n. PDF form filling (ENTERPRISE, v5.0.0-beta.11+)
+Three methods to fill PDF form fields:
+
+**Method 1** — Place Carbone tags directly in text fields of a PDF form. Loops are allowed.
+
+**Method 2** — Add annotations above form fields with these formatters:
+```
+{d.myText:fill}                        ← fills text field behind the tag
+{d.myCondition:ifEQ(true):check}       ← checks checkbox/radio behind the tag
+{d.myCondition:ifEQ(false):uncheck}    ← unchecks checkbox behind the tag
+```
+
+**Method 3** — Target fields by name anywhere in the PDF:
+```
+{d.text:fillField('fieldName')}                              ← fill text field or check checkbox
+{d.genre:ifEQ('boy'):show(male):fillField('radioGroup')}    ← select radio button option
+{d.confirm:ifEQ(true):checkField('fieldName')}              ← check checkbox if condition true
+```
+Supported field types: Text, Radio buttons, Checkboxes.
 
 ---
 
@@ -410,29 +434,6 @@ The following formatters still work but should be avoided in new templates:
 
 ### MS Word — table column sizing
 **Do not** resize table columns by mouse-dragging — it creates imprecise widths. Instead: right-click column → **Table Properties → Column → set "Preferred width"** to an exact value.
-
-### 8k. SVG templates
-SVG files can be used as Carbone input templates. Write tags inside HTML comments (`<!-- {d.value:svgUpdate(...)} -->`). Use `:svgUpdate(attrName, selectorValue, selectorType)` to update attributes, or `:svgSelectiveUpdate` to select and inject. Full syntax → `references/advanced-features.md`.
-
-### 8m. PDF form filling (ENTERPRISE, v5.0.0-beta.11+)
-Three methods to fill PDF form fields:
-
-**Method 1** — Place Carbone tags directly in text fields of a PDF form. Loops are allowed.
-
-**Method 2** — Add annotations above form fields with these formatters:
-```
-{d.myText:fill}                        ← fills text field behind the tag
-{d.myCondition:ifEQ(true):check}       ← checks checkbox/radio behind the tag
-{d.myCondition:ifEQ(false):uncheck}    ← unchecks checkbox behind the tag
-```
-
-**Method 3** — Target fields by name anywhere in the PDF:
-```
-{d.text:fillField('fieldName')}                              ← fill text field or check checkbox
-{d.genre:ifEQ('boy'):show(male):fillField('radioGroup')}    ← select radio button option
-{d.confirm:ifEQ(true):checkField('fieldName')}              ← check checkbox if condition true
-```
-Supported field types: Text, Radio buttons, Checkboxes.
 
 ---
 
