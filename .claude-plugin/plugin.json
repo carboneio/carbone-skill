@@ -1,0 +1,11 @@
+{
+  "name": "carbone-skill",
+  "version": "1.0.0",
+  "description": "Official Carbone skill — universal templating syntax, formatters, loops, conditions, and HTML/Markdown reference for AI assistants",
+  "author": {
+    "name": "Carbone",
+    "email": "support@carbone.io"
+  },
+  "repository": "https://github.com/carboneio/carbone-skill",
+  "homepage": "https://carbone.io"
+}
