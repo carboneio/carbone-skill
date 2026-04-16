@@ -282,6 +282,7 @@ Supports public URLs and Base64 Data URIs. Compatible with PDF, ODT, ODS, ODP, O
 ```
 {d.myImage:imageFit(contain)}
 ```
+If the image URL is missing or invalid, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead → `references/advanced-features.md`.
 
 ### 8b. Barcodes (ENTERPRISE, v3.4.6+)
 Insert a placeholder image, write in its **alternative text**:
@@ -292,7 +293,7 @@ Insert a placeholder image, write in its **alternative text**:
 {d.code:barcode(ean13, width:200, height:100)}  ← custom dimensions (mm)
 ```
 Common barcode options (second argument, `key:value` format): `width`, `height`, `scale` (1–10), `includetext` (true/false), `textsize`, `textxalign` (left/center/right/justify), `textyalign` (below/center/above), `rotate` (N/R/L/I), `barcolor` (#RRGGBB), `textcolor` (#RRGGBB), `backgroundcolor` (#RRGGBB), `eclevel` (L/M/Q/H — QR only).
-Carbone supports 107 barcode types.
+Carbone supports 107 barcode types. If the barcode value is missing or invalid, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead → `references/advanced-features.md`.
 
 ### 8c. Colors (ENTERPRISE, v4.17+)
 `:color(scope, type)` — injects color from data into the document element. The tag prints nothing. Color must be 6-digit hex (e.g. `FF0000` or `#FF0000`). Scopes: `p`, `row`, `cell`, `shape`, `part`. Types: `text` (default), `highlight`, `background`, `border`.
@@ -359,7 +360,7 @@ SVG files can be used as Carbone input templates. Write tags inside HTML comment
 ODT editable text fields and clickable checkboxes (LibreOffice only). Checkbox alternatives that work in any format: `{d.value:ifEQ(true):show(☑):elseShow(☐)}` (unicode) or emoji. Full setup steps → `references/advanced-features.md`.
 
 ### 8m. Native Charts (ENTERPRISE, v4+)
-Three chart types: native DOCX charts (loop tags in the embedded Excel sheet), ODT/LibreOffice charts (`{bindChart(refValue) = d.tag}` in the Data Table), and ECharts via `:chart` formatter in the alt text of a placeholder image (all formats). For full syntax and examples → read `references/advanced-features.md`.
+Three chart types: native DOCX charts (loop tags in the embedded Excel sheet), ODT/LibreOffice charts (`{bindChart(refValue) = d.tag}` in the Data Table), and ECharts via `:chart` formatter in the alt text of a placeholder image (all formats). If the chart config is missing or malformed, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead. For full syntax and examples → read `references/advanced-features.md`.
 
 ### 8n. PDF form filling (ENTERPRISE, v5.0.0-beta.11+)
 Three methods to fill PDF form fields:

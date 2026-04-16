@@ -1,6 +1,6 @@
 # Carbone Advanced Features Reference
 
-Read this file when the user asks for full details on: the `:color` formatter (scopes, types, limitations, `:bindColor`), `:html` rendering options and page breaks, native charts (DOCX, ODT/LibreOffice `bindChart`, ECharts), hyperlink edge cases, SVG templates, or ODT dynamic forms.
+Read this file when the user asks for full details on: the `:color` formatter (scopes, types, limitations, `:bindColor`), `:html` rendering options and page breaks, native charts (DOCX, ODT/LibreOffice `bindChart`, ECharts), hyperlink edge cases, SVG templates, ODT dynamic forms, or removing placeholder images when value is empty.
 
 ---
 
@@ -145,3 +145,26 @@ Only basic SVG shapes are updated: `rect`, `circle`, `line`, `ellipse`, `polygon
 {d.value:ifEQ(true):show(☑):elseShow(☐)}       ← unicode
 {d.value:ifEQ(true):show(.img1):elseShow(.img2)} ← SVG dynamic images
 ```
+
+---
+
+## Removing placeholder images when value is empty
+
+When a dynamic picture URL is invalid, a barcode value is incorrect, or an ECharts config is missing or malformed, Carbone inserts a default SVG image — a square with an X (cross). To remove the placeholder entirely instead, add a second tag in the **same alternative text** using `:drop(img)`.
+
+**Dynamic picture:**
+```
+{d.imageUrl}{d.imageUrl:ifEM:drop(img)}
+```
+
+**Barcode:**
+```
+{d.number:barcode(ean13)}{d.number:ifEM:drop(img)}
+```
+
+**ECharts:**
+```
+{d.chartOptions:chart}{d.chartOptions:ifEM:drop(img)}
+```
+
+The `:drop(img)` tag prints nothing — if the condition is true, it removes the entire placeholder image from the document. Both tags must be placed in the image's alternative text.
