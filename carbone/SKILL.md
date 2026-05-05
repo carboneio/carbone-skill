@@ -14,7 +14,8 @@ description: >
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.1.1"
+  version: "1.2.0"
+  carbone_version: "5.5.0"
   repository: https://github.com/carboneio/carbone-skill
 ---
 
@@ -39,7 +40,7 @@ Carbone is a **declarative** templating engine. You provide a template (DOCX, XL
 | `{o.option=value}` | Carbone runtime option (removed from output) |
 
 ### Special `{o.}` options
-Common: `{o.timezone=Europe/Paris}` `{o.lang=en-US}` `{o.converter=L}` `{o.useHighPrecisionArithmetic=true}` `{o.exportFormattedValuesAsText=true}` (XLSX only) `{o.preReleaseFeatureIn=VERSION}` (opt-in pre-release features).
+Common: `{o.timezone=Europe/Paris}` `{o.lang=en-US}` `{o.converter=L}` `{o.useHighPrecisionArithmetic=true}` `{o.exportFormattedValuesAsText=true}` (XLSX only) `{o.hardRefresh=true}` (force converter even when input/output format match — useful for XLSX formula refresh) `{o.preReleaseFeatureIn=VERSION}` (opt-in pre-release features).
 Full option list → `references/runtime-options.md`.
 
 ---
@@ -209,9 +210,9 @@ Drops the containing document element when condition is true. The tag prints **n
 ```
 {d.discount:ifEM():drop('row')}
 ```
-Elements: `row` `p` `img` `table` `chart` `shape` `slide` (ODP) `item` (ODP/ODT) `sheet` (ODS) `h` (ODT).
-Drop N consecutive: `{d.text:ifEM():drop(row, 3)}`. Use `:keep` for the inverse.
-Format limits: ODS → `row`/`img` only. HTML → `table`/`row`/`p`. XLSX → `row` only.
+Elements: `row` `col` `p` `img` `table` `chart` `shape` `slide` (ODP) `item` (ODP/ODT) `sheet` (ODS) `h` (ODT) `div` (HTML) `span` (HTML).
+Drop N consecutive: `{d.text:ifEM():drop(row, 3)}` — works for `p` and `row`, not `col`. One `:drop(col)` per column only. Use `:keep` for the inverse.
+Format limits: ODS → `col`/`row`/`img`/`sheet` only. XLSX → `row`/`col` only. PPTX → `col`/`row`/`img`/`p`/`shape`/`chart`/`table`. HTML → `table`/`col`/`row`/`p`/`div`/`span`.
 
 ### 6d. Logical operators
 `:ifEQ(v)` `:ifNE(v)` `:ifGT(v)` `:ifGTE(v)` `:ifLT(v)` `:ifLTE(v)` `:ifIN(v)` `:ifNIN(v)` `:ifEM()` `:ifNEM()` `:ifTE(type)`

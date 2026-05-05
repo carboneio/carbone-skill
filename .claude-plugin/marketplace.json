@@ -1,17 +1,23 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "carbone-skill",
   "owner": {
     "name": "Carbone",
     "email": "support@carbone.io"
   },
   "metadata": {
-    "description": "Official Carbone skill — universal templating syntax, formatters, loops, conditions, and HTML/Markdown reference for AI assistants",
-    "version": "1.0.0"
+    "description": "Official Carbone skill — complete templating language reference covering tags, loops, conditions, formatters, aggregators, and all output formats (DOCX, XLSX, PPTX, ODT, HTML, Markdown, PDF)",
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "carbone",
-      "description": "Enables AI to build fully-featured Carbone templates using verified syntax: tags, loops, conditions, formatters, HTML/Markdown output, and embedding tags into AI-generated DOCX, XLSX, and PPTX files.",
+      "version": "1.2.0",
+      "description": "Enables AI to build fully-featured Carbone templates using verified syntax: tags, loops, conditions, formatters, HTML/Markdown output, and embedding tags into AI-generated DOCX, XLSX, PPTX, ODT, HTML, Markdown, and PDF files.",
+      "category": "productivity",
+      "homepage": "https://carbone.io",
+      "repository": "https://github.com/carboneio/carbone-skill",
+      "license": "Apache-2.0",
       "source": "./",
       "strict": false,
       "skills": [

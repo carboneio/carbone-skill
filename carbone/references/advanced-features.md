@@ -92,6 +92,13 @@ Compatible with: ODT, ODS, ODP, ODG, DOCX, PPTX, XLSX, HTML, PDF. Use `echarts@v
 <p style="break-after:page">Page break after this</p>
 ```
 
+**HTML entities in `:html`** (v5.5.0+): The `:html` formatter supports named, decimal, and hexadecimal HTML entities:
+- Named: `&amp;` `&copy;` `&nbsp;`
+- Decimal: `&#169;` `&#128512;`
+- Hexadecimal: `&#xA9;` `&#x1F600;`
+- Emoji supported as literal Unicode or numeric entities
+- Avoid `&#9;` for tabs — use `&ensp;` or `&emsp;` instead (HTML parsers collapse `&#9;` to a single space)
+
 ---
 
 ## Hyperlinks — edge cases (ENTERPRISE, v3+)

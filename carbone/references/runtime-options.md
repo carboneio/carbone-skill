@@ -7,6 +7,7 @@ Runtime options are placed anywhere in the template — they are removed from ou
 | Option | Description |
 |---|---|
 | `{o.useHighPrecisionArithmetic=true}` | Enables arbitrary-precision decimal arithmetic (v4.22.4+) |
+| `{o.hardRefresh=true}` | Forces converter processing even when input and output format are the same — useful to refresh XLSX formulas after data injection (v5.4.4+) |
 | `{o.preReleaseFeatureIn=VERSION}` | Activates a pre-release feature by version number (e.g. `5002000`) |
 | `{o.timezone=Europe/Paris}` | Forces the timezone used by date formatters; overrides the API option (v5.4.3+) |
 | `{o.lang=en-US}` | Forces the language/locale; overrides the API option. Accepts upper or lowercase (v5.4.3+) |
