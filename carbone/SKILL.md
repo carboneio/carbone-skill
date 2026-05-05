@@ -14,7 +14,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.2.0"
+  version: "1.2.1"
   carbone_version: "5.5.0"
   repository: https://github.com/carboneio/carbone-skill
 ---

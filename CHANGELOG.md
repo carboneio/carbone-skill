@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+- Added `.claude-plugin/plugin.json` manifest required by the marketplace CI scanner
+- Added `skills: "./carbone"` path in `plugin.json` for direct plugin installation
+- Improved `marketplace.json`: added `$schema`, `category`, `homepage`, `repository`, `license`; removed `strict: false` (no longer needed now that `plugin.json` exists)
+
 ## 1.2.0
 - Updated for Carbone v5.5.0
 - Added `col` element to drop/keep (Section 6c) with updated format limits for XLSX, PPTX, HTML, ODS

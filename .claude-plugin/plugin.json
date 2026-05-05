@@ -1,11 +1,13 @@
 {
   "name": "carbone-skill",
-  "version": "1.0.0",
-  "description": "Official Carbone skill — universal templating syntax, formatters, loops, conditions, and HTML/Markdown reference for AI assistants",
+  "version": "1.2.1",
+  "description": "Official Carbone skill — complete templating language reference covering tags, loops, conditions, formatters, aggregators, and all output formats (DOCX, XLSX, PPTX, ODT, HTML, Markdown, PDF)",
+  "license": "Apache-2.0",
   "author": {
     "name": "Carbone",
     "email": "support@carbone.io"
   },
   "repository": "https://github.com/carboneio/carbone-skill",
-  "homepage": "https://carbone.io"
+  "homepage": "https://carbone.io",
+  "skills": "./carbone"
 }
