@@ -151,6 +151,27 @@ Input can be ISO 8601, Unix timestamp (ms), Unix timestamp in seconds (with `'X'
 'P1Y2M3DT4H5M6S':formatI('hour')  // ISO 8601 duration input
 ```
 
+**Convert an ISO 8601 duration to HH:mm format using two tags:**
+
+ISO 8601 duration strings (e.g. `PT45M`, `PT1H30M`) are parsed natively by Day.js without needing a `patternIn` argument.
+Since `:formatI` returns a number via `.as()`, formatted output like `HH:mm` requires two separate Carbone tags — one for hours, one for remaining minutes:
+```
+{d.duration:formatI('hours'):floor:padl(2,'0')}:{d.duration:formatI('minutes'):mod(60):padl(2,'0')}
+```
+
+Breakdown:
+- `:formatI('hours'):floor` — total hours, rounded down to nearest integer
+- `:formatI('minutes'):mod(60)` — total minutes modulo 60, giving remaining minutes after full hours
+- `:padl(2,'0')` — left-pads with `0` to ensure 2-character output
+
+| JSON value | Output |
+|---|---|
+| `PT45M` | `00:45` |
+| `PT1H30M` | `01:30` |
+| `PT2H` | `02:00` |
+
+⚠️ `:formatI` with a format token string like `'HH:mm'` does NOT work — it internally calls Day.js `.as()` which only accepts unit identifiers (`'hours'`, `'minutes'`, `'seconds'`, etc.) and returns a number. The correct method for formatted string output would be `.format()`, but Carbone's `:formatI` uses `.as()`.
+
 ---
 
 ## Array Formatters

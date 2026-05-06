@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.2
+- Added HH:mm pattern for `:formatI` with ISO 8601 durations in `references/formatters.md`
+
 ## 1.2.1
 - Added `.claude-plugin/plugin.json` manifest required by the marketplace CI scanner
 - Added `skills: "./carbone"` path in `plugin.json` for direct plugin installation
