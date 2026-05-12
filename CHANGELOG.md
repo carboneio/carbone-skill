@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Added `references/upgrade-guide.md` — Carbone upgrade guide covering v4→v5 migration and v5.0→v5.1.1 Studio Web Component breaking changes
+
 ## 1.2.2
 - Added HH:mm pattern for `:formatI` with ISO 8601 durations in `references/formatters.md`
 

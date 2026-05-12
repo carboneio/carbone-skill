@@ -482,6 +482,7 @@ When asked to validate a Carbone tag, check:
 - `references/runtime-options.md` — All `{o.}` template options with descriptions and version requirements
 - `references/advanced-features.md` — Full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT dynamic forms, native charts (DOCX, ODT `bindChart`, ECharts)
 - `references/xlsx-tips.md` — How to compute totals in Excel/ODS spreadsheets when Carbone injects new rows via loops: dynamic `INDIRECT`+`ROW` formulas, Carbone aggregators, `MATCH`/`INDEX` referencing
+- `references/upgrade-guide.md` — Upgrading between Carbone versions: `carbone-version` header, breaking changes, stricter syntax detection in v5, LibreOffice 25.2 rendering changes, `templateId` vs `versionId`
 
 **When to read which reference:**
 - User asks about HTML template, CSS injection, chart formatter, `<carbone-pdf-options>`, headers/footers → read `references/html-templates.md`
@@ -491,5 +492,6 @@ When asked to validate a Carbone tag, check:
 - User asks about `{o.}` template options, timezone, lang, converter, pre-release flags → read `references/runtime-options.md`
 - User asks about `:color` scopes/types, `:html` options, hyperlink edge cases, SVG templates, ODT forms, or native chart syntax → read `references/advanced-features.md`
 - User asks how to compute totals or use Excel formulas in a spreadsheet where Carbone injects rows → read `references/xlsx-tips.md`
+- User asks about upgrading Carbone versions, the `carbone-version` header, breaking changes, `templateId` vs `versionId`, or LibreOffice rendering differences → read `references/upgrade-guide.md`
 
 Official docs: https://carbone.io/documentation/design/overview/getting-started.html
