@@ -126,3 +126,32 @@ Repeat a row N times based on a JSON value. `qty` is the number of repetitions:
 {d[i].id} - {d[i+1*qty].id}
 ```
 Maximum: 400 repetitions. Row is duplicated `qty` times; rows with `qty=0` are skipped.
+
+---
+
+## Nested loops (multi-level)
+
+**Two-level loop** — both the inner and outer loop-end rows are required. Each end row carries only the `[i+1]` for the level it closes:
+```
+{d.bundles[i].components[i].code}
+{d.bundles[i].components[i].qty:formatN(2)}
+{d.bundles[i].components[i+1]}        ← inner loop-end
+{d.bundles[i+1]}                      ← outer loop-end
+```
+
+**Nested data at different depths in the same table**:
+```
+{d.pages[i]}                                     ← page-level field
+{d.pages[i].positions[i].description}            ← position-level field
+{d.pages[i].positions[i+1].description}          ← inner end
+{d.pages[i+1]}                                   ← outer end
+```
+
+**Three-level (and deeper) loops** — Carbone supports arbitrary nesting depth. Each level requires its own end-row with `[i+1]`. End-rows must appear in innermost-first order:
+```
+{d.training[i].child[i].sessionTraining[i].examSession}
+{d.training[i].child[i].sessionTraining[i+1]}   ← closes sessionTraining loop
+{d.training[i].child[i+1]}                       ← closes child loop
+{d.training[i+1]}                                ← closes training loop
+```
+A 4-level loop adds one more `[i]` nesting and one more end-row following the same pattern.

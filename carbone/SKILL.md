@@ -1,21 +1,21 @@
 ---
 name: carbone
 description: >
-  Use this skill when the user:
-  - Asks how to write a Carbone tag, loop, condition, or formatter
-  - Wants to build or design a template (invoice, report, contract, spreadsheet, presentation)
-  - Asks to validate, fix, or explain Carbone syntax, or map JSON data into a template
-  - Mentions Carbone, {d.}, {c.}, formatters, or document generation from JSON
-  - Uses terms like "Carbone tag", "Carbone placeholder", "Carbone field", "document placeholder", "{d.", "{c.", "fill a template with data", "generate a report from data", "Markdown to PDF", "HTML to PDF"
-  - Asks about HTML templates (CSS injection, charts, headers/footers, PDF options) or Markdown templates (loops in tables, DOCX/PDF output)
-  - Is generating a DOCX, XLSX, or PPTX and needs to embed Carbone tags
-  - Wants to generate any document (PDF, Word, Excel, PowerPoint, HTML, Markdown) from JSON data — even if they don't mention "Carbone" by name
-  Always consult this skill before answering Carbone questions. NEVER invent syntax.
+  Use this skill when the user asks about Carbone tags, loops, conditions, formatters, or template design.
+  Use it to validate or fix Carbone syntax, or to map JSON data into a document template.
+  Use it when generating any document (PDF, Word, Excel, PowerPoint, HTML, Markdown) from JSON data — even without mentioning Carbone by name.
+when_to_use: >
+  Trigger on: {d.}, {c.}, {#alias}, {$alias}, {t()}, {o.}, formatters, document generation from JSON,
+  "Carbone tag", "Carbone placeholder", "fill a template with data", "generate a report from data",
+  "Markdown to PDF", "HTML to PDF", DOCX/XLSX/PPTX template with placeholders,
+  invoice/contract/report template design, HTML template with CSS injection or charts,
+  loop or condition syntax in a template.
+user-invocable: false
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.2.1"
-  carbone_version: "5.5.0"
+  version: "1.3.0"
+  carbone_version: "5.6.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
 
@@ -23,7 +23,8 @@ metadata:
 
 Carbone is a **declarative** templating engine. You provide a template (DOCX, XLSX, PPTX, ODT, HTML, …) with **Carbone tags** (placeholders in `{}`), plus a JSON dataset. Carbone merges both to produce the filled document.
 
-**Important**: Never invent syntax. Only use what is documented here or in `references/formatters.md`.
+> **NEVER invent Carbone syntax.**
+> Carbone is its own language — it is NOT JSONPath, NOT Mustache, NOT Handlebars, NOT Jinja2, NOT any other templating language. Its tag syntax, formatters, loop markers, and filter expressions are unique. Any pattern not explicitly documented in this skill or its reference files does not exist in Carbone. If a user's request cannot be answered from what is documented here, say so — do not guess or adapt syntax from another language.
 
 ---
 
@@ -84,6 +85,8 @@ Tuesday we eat {$mealOf(2).name}.
 
 Aliases are shortcuts — they do NOT store values. To store a computed value, use `:set` (see Section 7).
 
+For advanced patterns → `references/aliases.md`.
+
 ---
 
 ## 4. Loops (Repetitions)
@@ -127,8 +130,6 @@ Operators: `>`, `<`, `>=`, `<=`, `=`, `!=`. Place conditions after the iterator:
 ```
 **v5+**: only the `[i+1]` row needs the filter. First N items: `{d[i, i < 2].name}`. Last item only: `{d[i=-1].name}`. Exclude last: `{d[i, i!=-1].name}`.
 
-For negative-index patterns, OR-logic with `:set`, and advanced filter examples → read `references/loops-advanced.md`.
-
 ### 4e. Grouping (v5+)
 Use an attribute name as a custom iterator to group rows by that attribute:
 ```
@@ -136,7 +137,7 @@ Use an attribute name as a custom iterator to group rows by that attribute:
 {d[brand+1].brand}
 ```
 
-For advanced loop patterns (bidirectional loops, sorting, distinct, lookup/JOIN, parallel loops, loops on primitive arrays, loops on nested arrays, object attribute search, row repetition) → read `references/loops-advanced.md`.
+For advanced loop patterns (negative-index filtering, OR-logic with `:set`, bidirectional loops, sorting, distinct, lookup/JOIN, parallel loops, primitive/nested arrays, object attribute search, row repetition) → read `references/loops-advanced.md`.
 
 ---
 
@@ -176,7 +177,7 @@ For the **complete formatter reference**, read `references/formatters.md`.
 
 **Interval**: `:formatI(patternOut, patternIn)` — converts ms/seconds/ISO durations to human-readable
 
-**Array**: `:arrayJoin(sep, index, count)` `:arrayMap(objSep, attSep, attributes)` `:count(start)`
+**Array**: `:arrayJoin(sep, index, count)` `:arrayMap(objSep, attSep, attributes)` `:cumCount` `:cumCountD` `:count(start)` (deprecated → use `:cumCount`)
 
 **Key-value mapping**: `:convEnum('ENUM_NAME')` — enum defined in render options
 
@@ -208,7 +209,7 @@ Recommendation: use only line breaks (`Shift+Enter`) between Begin/End tags to a
 ### 6c. Smart conditions — drop/keep elements (ENTERPRISE, v4+)
 Drops the containing document element when condition is true. The tag prints **nothing**.
 ```
-{d.discount:ifEM():drop('row')}
+{d.discount:ifEM():drop(row)}
 ```
 Elements: `row` `col` `p` `img` `table` `chart` `shape` `slide` (ODP) `item` (ODP/ODT) `sheet` (ODS) `h` (ODT) `div` (HTML) `span` (HTML).
 Drop N consecutive: `{d.text:ifEM():drop(row, 3)}` — works for `p` and `row`, not `col`. One `:drop(col)` per column only. Use `:keep` for the inverse.
@@ -222,13 +223,14 @@ Chain with `:and(.prop)` or `:or(.prop)` (OR is the default between consecutive 
 {d.age:ifGTE(18):and(.country):ifEQ('FR'):show('Eligible'):elseShow('Not eligible')}
 ```
 
+For real-world conditional patterns (optional blocks, table/row visibility, NaN guard, range checks, checkbox patterns, complement data branching) → `references/practical-examples.md`.
+
 ---
 
 ## 7. Computation
 
 ### 7a. Simple mathematics
 `:add`, `:sub`, `:mul`, `:div`, `:mod`, `:abs` — see formatters reference.
-High-precision mode: add `{o.useHighPrecisionArithmetic=true}` to the template.
 
 ### 7b. Aggregators (ENTERPRISE, v4+)
 Process an entire array and return a single result. Place **outside** the loop for totals:
@@ -283,7 +285,7 @@ Supports public URLs and Base64 Data URIs. Compatible with PDF, ODT, ODS, ODP, O
 ```
 {d.myImage:imageFit(contain)}
 ```
-If the image URL is missing or invalid, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead → `references/advanced-features.md`.
+If the image URL is missing or invalid, Carbone inserts a default SVG (square with a cross).
 
 ### 8b. Barcodes (ENTERPRISE, v3.4.6+)
 Insert a placeholder image, write in its **alternative text**:
@@ -294,7 +296,7 @@ Insert a placeholder image, write in its **alternative text**:
 {d.code:barcode(ean13, width:200, height:100)}  ← custom dimensions (mm)
 ```
 Common barcode options (second argument, `key:value` format): `width`, `height`, `scale` (1–10), `includetext` (true/false), `textsize`, `textxalign` (left/center/right/justify), `textyalign` (below/center/above), `rotate` (N/R/L/I), `barcolor` (#RRGGBB), `textcolor` (#RRGGBB), `backgroundcolor` (#RRGGBB), `eclevel` (L/M/Q/H — QR only).
-Carbone supports 107 barcode types. If the barcode value is missing or invalid, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead → `references/advanced-features.md`.
+Carbone supports 107 barcode types. If the barcode value is missing or invalid, Carbone inserts a default SVG (square with a cross).
 
 ### 8c. Colors (ENTERPRISE, v4.17+)
 `:color(scope, type)` — injects color from data into the document element. The tag prints nothing. Color must be 6-digit hex (e.g. `FF0000` or `#FF0000`). Scopes: `p`, `row`, `cell`, `shape`, `part`. Types: `text` (default), `highlight`, `background`, `border`.
@@ -320,11 +322,7 @@ Set the URL of a hyperlink (in your editor) to a Carbone tag, e.g. `{d.url}`. Wo
 - Dynamic value: `{d.status:t}` — looks up the value in the translation dictionary
 - Use locale-aware formatters for numbers/dates/currencies: `:formatN`, `:formatD`, `:formatC`, `:formatI`
 
-### 8g. Key-value mapping
-`:convEnum('ENUM_NAME')` — maps index or key to a human-readable label.
-`ENUM_NAME` is defined in the `enum` property of render options.
-
-### 8h. File operations (ENTERPRISE, v4.22+)
+### 8g. File operations (ENTERPRISE, v4.22+)
 Append PDF files at the end (or start) of the generated PDF:
 ```
 {d.products[i].datasheet:appendFile}           ← append at end (default)
@@ -341,29 +339,31 @@ Attach a file inside a PDF (Factur-X, ZUGFeRD):
 {d.myArray[i+1]}
 ```
 
-### 8i. Digital signatures (ENTERPRISE, BETA — v5+)
+### 8h. Digital signatures (ENTERPRISE, BETA — v5+)
 Places a signature field. Tag prints nothing; returns position coordinates in the API response:
 ```
 {d.signatureBuyer:sign}
 ```
 
-### 8j. Transform / move shapes (ENTERPRISE, v4.22.11+ — requires `{o.preReleaseFeatureIn=4022011}`)
+### 8i. Transform / move shapes (ENTERPRISE, v4.22.11+ — requires `{o.preReleaseFeatureIn=4022011}`)
 Move shapes/images on X or Y axis in ODP/PPTX/ODT:
 ```
 {d.offset:transform('x', 'cm')}
 ```
 Units: `cm`, `mm`, `inch`, `pt`. Write inside the shape's alt text or inside the shape itself.
 
-### 8k. SVG templates
+### 8j. SVG templates
 SVG files can be used as Carbone input templates. Write tags inside HTML comments (`<!-- {d.value:svgUpdate(...)} -->`). Use `:svgUpdate(attrName, selectorValue, selectorType)` to update attributes, or `:svgSelectiveUpdate` to select and inject. Full syntax → `references/advanced-features.md`.
 
-### 8l. Dynamic Forms — ODT Text Fields and Checkboxes (ENTERPRISE, v3.3+)
+### 8k. Dynamic Forms — ODT Text Fields and Checkboxes (ENTERPRISE, v3.3+)
 ODT editable text fields and clickable checkboxes (LibreOffice only). Checkbox alternatives that work in any format: `{d.value:ifEQ(true):show(☑):elseShow(☐)}` (unicode) or emoji. Full setup steps → `references/advanced-features.md`.
 
-### 8m. Native Charts (ENTERPRISE, v4+)
-Three chart types: native DOCX charts (loop tags in the embedded Excel sheet), ODT/LibreOffice charts (`{bindChart(refValue) = d.tag}` in the Data Table), and ECharts via `:chart` formatter in the alt text of a placeholder image (all formats). If the chart config is missing or malformed, Carbone inserts a default SVG (square with a cross). Use `:drop(img)` to remove the placeholder instead. For full syntax and examples → read `references/advanced-features.md`.
+### 8l. Native Charts (ENTERPRISE, v4+)
+Three chart types: native DOCX charts (loop tags in the embedded Excel sheet), ODT/LibreOffice charts (`{bindChart(refValue) = d.tag}` in the Data Table), and ECharts via `:chart` formatter in the alt text of a placeholder image (all formats). If the chart config is missing or malformed, Carbone inserts a default SVG (square with a cross). For full syntax and examples → read `references/advanced-features.md`.
 
-### 8n. PDF form filling (ENTERPRISE, v5.0.0-beta.11+)
+> **Missing/invalid image or barcode/chart value**: Carbone always inserts a default SVG placeholder (square with a cross). Use `{d.field:ifEM():drop(img)}` in the same alt-text to remove the element entirely when the value is absent.
+
+### 8m. PDF form filling (ENTERPRISE, v5.0.0-beta.11+)
 Three methods to fill PDF form fields:
 
 **Method 1** — Place Carbone tags directly in text fields of a PDF form. Loops are allowed.
@@ -406,10 +406,19 @@ Only the font style and size of the **first `{` character** applies to the outpu
 Carbone tags and Excel formulas must be in **separate cells**. For totals after loop injection, prefer Carbone aggregators: `{d.items[].qty:aggSum:formatN}`. For `INDIRECT`+`ROW` and `MATCH`/`INDEX` patterns → read `references/xlsx-tips.md`.
 
 ### Removing the trailing comma/separator in a loop
+Place the separator in its own paragraph alongside a drop tag. The tag drops that paragraph only for the last item (`i=-1`); for all earlier items the paragraph is kept:
 ```
-{d.list[i, i=-1]:ifNEM:drop(p)}    ← drop last item's paragraph (e.g. trailing comma)
+{d.items[i].name}
+; {d.items[i, i=-1]:drop(p)}     ← separator paragraph — dropped for the last item
+{d.items[i+1].name}
 ```
-Or use `:arrayJoin` to flatten arrays without a loop when you just need a string.
+Data `["A","B","C"]` → outputs `A`, `;`, `B`, `;`, `C` (no trailing semicolon).
+
+Alternatives when you only need a flat string — no loop required:
+```
+{d.items:arrayJoin('; ')}              ← join with separator
+{d.items[].name:aggStr('; ')}          ← aggregate field from array of objects
+```
 
 ### Prefer `:drop` over `hideBegin/hideEnd`
 `:drop` is simpler, cleaner, and removes the element without leaving empty space. Use `hideBegin/hideEnd` only when you need to hide large multi-element blocks.
@@ -420,22 +429,8 @@ Avoid floating images, shapes, or text boxes inside Carbone loops. Set their anc
 ### `{bindColor}` pitfall with loops
 If the same reference color is used in **multiple places or multiple loops** in the template, Carbone may inject the wrong value into the wrong location and corrupt the document. Every reference color used with `{bindColor}` must appear in **exactly one location** in the template.
 
-### Deprecated formatters — use modern equivalents instead
-The following formatters still work but should be avoided in new templates:
-
-| Deprecated | Modern equivalent |
-|---|---|
-| `:ifEmpty(text)` | `:ifEM():show(text)` |
-| `:ifEqual(val, text)` | `:ifEQ(val):show(text)` |
-| `:ifContain(val, text)` | `:ifIN(val):show(text)` |
-| `:convDate(patternIn, patternOut)` | `:formatD(patternOut, patternIn)` |
-| `:int` | `:round(0)` or `:floor` |
-| `:toFixed` | `:round(n)` |
-| `:toEN` | `:formatN()` with `lang:"en-us"` |
-| `:toFR` | `:formatN()` with `lang:"fr-fr"` |
-
-### MS Word — table column sizing
-**Do not** resize table columns by mouse-dragging — it creates imprecise widths. Instead: right-click column → **Table Properties → Column → set "Preferred width"** to an exact value.
+### Deprecated formatters
+Full list of deprecated formatters and their modern replacements → `references/formatters.md` (sections "Legacy condition formatters" and "Other deprecated formatters").
 
 ---
 
@@ -462,36 +457,38 @@ When asked to validate a Carbone tag, check:
     ✅ {d.fruits[i].name} {d.fruits[i+1].name}
        {d.vegetables[i].name} {d.vegetables[i+1].name}
     ```
-    If you need to **access data from multiple different arrays within the same loop row**, use **Lookups** (section 4j). Lookups let you reach into any other array from inside a single loop — there is no limit on how many different arrays you can access this way, and no risk of interleaving corruption.
+    If you need to **access data from multiple different arrays within the same loop row**, use **Lookups** (`references/loops-advanced.md`). Lookups let you reach into any other array from inside a single loop — there is no limit on how many different arrays you can access this way, and no risk of interleaving corruption.
 11. **Sorting** — uses attribute name as iterator (e.g. `[power, i]` / `[power+1, i+1]`), NOT `sortAsc()`/`sortDesc()` functions
 12. **Filtering** — uses `[i, prop > value]` directly in brackets, NOT a `where()` function
 13. **Grouping** — uses attribute name `[brand]`/`[brand+1]`, NOT a `groupBy()` function
 14. **Condition chaining** — a logical operator (`:ifEQ` etc.) must be followed by `:show`, `:elseShow`, `:hideBegin/End`, `:showBegin/End`, or `:drop`/`:keep`
 15. **`:drop` / `:keep` / `:set` / `:sign`** — these all print **nothing** in the output
 16. **Dynamic images** — must be a full Data-URI (`data:image/jpeg;base64,...`) or a public URL — pure base64 without the prefix is not supported
+17. **`:isImage` vs `:imageFit`** — `:isImage` is a private internal method; use `:imageFit(contain|fill|fillWidth)` for image resizing
+18. **Double quotes are never valid in tags** — use single quotes everywhere: formatter args `{d.date:formatD('LL')}` and array filter values `[key='value']`. Double quotes in either location cause a rendering error.
+19. **Space in `show()` without quotes** — `show(40 FT)` outputs `40FT`; use `show('40 FT')` — unquoted spaces are dropped
+20. **Attributes after `[i+1]` are ignored** — `{d.arr[i+1].name}` never reads `.name`; use plain `{d.arr[i+1]}`
+21. **Missing `.` between `[index]` and next key** — `{d.items[0]products.value}` gives empty output; must be `{d.items[0].products.value}`
+22. **Alias must start with a data path** — `{#flag=0:ifEM():hideBegin}` is invalid because `0` is not a Carbone data path; aliases must start with `d.`, `c.`, or a `$param` reference
+23. **Never use spaces inside a tag** — Carbone trims spaces between any structural elements (`{`, `d`, `.`, field names, `[]`, `:`, `}`, etc.) so `{d.photo :imageFit(contain)}` technically works, but this is bad practice and should never be written intentionally
+24. **Double colon `::` is invalid** — `{d.value:aggSum::formatN(2)}` creates an empty formatter name and will cause a rendering error; remove the extra colon
 
 ---
 
 ## Reference files
 
-- `references/formatters.md` — complete list of all formatters with parameters and examples
-- `references/loops-advanced.md` — bidirectional loops, sorting, distinct, lookup/JOIN, parallel loops, loops on primitive/nested arrays, object attribute search, row repetition
-- `references/set-patterns.md` — advanced `:set` patterns: dynamic URLs, type conversion, date aggregation, JSON restructuring, flat list grouping, N-column pagination, sibling array pairing, dynamic object keys
-- `references/html-templates.md` — HTML-specific features: inline CSS injection, `:chart`, barcodes in `<img src>`, `<carbone-pdf-header/footer>`, page breaks, `<carbone-pdf-options>`, PDF conversion API
-- `references/markdown-templates.md` — Markdown-specific features: table loops, limitations (no barcodes, no page breaks, no HTML injection yet), convert to PDF/DOCX/ODT/PNG/JPG
-- `references/runtime-options.md` — All `{o.}` template options with descriptions and version requirements
-- `references/advanced-features.md` — Full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT dynamic forms, native charts (DOCX, ODT `bindChart`, ECharts)
-- `references/xlsx-tips.md` — How to compute totals in Excel/ODS spreadsheets when Carbone injects new rows via loops: dynamic `INDIRECT`+`ROW` formulas, Carbone aggregators, `MATCH`/`INDEX` referencing
-- `references/upgrade-guide.md` — Upgrading between Carbone versions: `carbone-version` header, breaking changes, stricter syntax detection in v5, LibreOffice 25.2 rendering changes, `templateId` vs `versionId`
+Read these when the user's question goes beyond what SKILL.md covers:
 
-**When to read which reference:**
-- User asks about HTML template, CSS injection, chart formatter, `<carbone-pdf-options>`, headers/footers → read `references/html-templates.md`
-- User asks about Markdown template, MD loops, converting MD to PDF/DOCX → read `references/markdown-templates.md`
-- User asks about bidirectional loops, sorting, lookup, parallel loops, arrays of primitives → read `references/loops-advanced.md`
-- User needs complex data transformation, JSON restructuring, aggregation patterns, or multi-step `:set` logic → read `references/set-patterns.md`
-- User asks about `{o.}` template options, timezone, lang, converter, pre-release flags → read `references/runtime-options.md`
-- User asks about `:color` scopes/types, `:html` options, hyperlink edge cases, SVG templates, ODT forms, or native chart syntax → read `references/advanced-features.md`
-- User asks how to compute totals or use Excel formulas in a spreadsheet where Carbone injects rows → read `references/xlsx-tips.md`
-- User asks about upgrading Carbone versions, the `carbone-version` header, breaking changes, `templateId` vs `versionId`, or LibreOffice rendering differences → read `references/upgrade-guide.md`
+- `references/formatters.md` — complete formatter list with parameters and examples. Read when verifying a formatter name, checking parameters, or reviewing deprecated formatters.
+- `references/aliases.md` — `{#}` / `{$}` alias patterns: filter aliases, object-pick, frozen-index, loop shorthand, looping over alias arrays. Read when user asks about aliases.
+- `references/loops-advanced.md` — bidirectional loops, sorting, distinct, lookup/JOIN, parallel loops, primitive/nested arrays, object attribute search, row repetition. Read when user asks about sorting, lookup, bidirectional or parallel loops.
+- `references/set-patterns.md` — advanced `:set` patterns: dynamic URLs, type conversion, JSON restructuring, list grouping, N-column pagination, dynamic object keys. Read when user needs complex data transformation or multi-step `:set`.
+- `references/html-templates.md` — inline CSS injection, `:chart`, barcodes, `<carbone-pdf-header/footer>`, page breaks, `<carbone-pdf-options>`. Read when user asks about HTML templates, CSS, PDF options.
+- `references/markdown-templates.md` — Markdown table loops, limitations, convert to PDF/DOCX/ODT. Read when user asks about Markdown templates.
+- `references/runtime-options.md` — all `{o.}` options with descriptions and version requirements. Read when user asks about timezone, lang, converter, or pre-release flags.
+- `references/advanced-features.md` — full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT forms, native charts. Read when user asks about color formatting, SVG, ODT forms, or ECharts.
+- `references/xlsx-tips.md` — computing totals in Excel/ODS when Carbone injects rows: `INDIRECT`+`ROW`, aggregators, `MATCH`/`INDEX`. Read when user asks about Excel formulas in spreadsheet templates.
+- `references/upgrade-guide.md` — upgrading Carbone versions: breaking changes, `carbone-version` header, `templateId` vs `versionId`. Read when user asks about upgrading or migration.
+- `references/practical-examples.md` — real-world combinations: conditional visibility (optional blocks, table/row hiding, NaN guard, range checks, checkboxes), date formatting, aggregation patterns, complement data, chained formatters, `..` in formatter args. Read when user asks for practical examples, real-world patterns, or complex conditional logic.
 
 Official docs: https://carbone.io/documentation/design/overview/getting-started.html

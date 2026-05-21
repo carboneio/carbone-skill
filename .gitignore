@@ -1,3 +1,9 @@
 *.skill
 .DS_Store
 node_modules/
+templates/
+draft.md
+draft-real-world-patterns*.md
+*.jsonl
+*.py
+.claude/

@@ -30,6 +30,7 @@ Read this file when the user asks for full details on: the `:color` formatter (s
 
 **Known limitations:**
 - Cannot be used in aliases or combined with aggregators
+- PPTX (v5.6.0+): all combinations of `scope` (row, cell, shape) and `type` (text, background, border) are supported; `border` applies to shapes only
 - For ODP (text, tables, shapes) and ODT (shapes only): a non-default style must already be applied to the target element in the template
 - Complex nested tables with colors on sub-tables are not fully supported
 

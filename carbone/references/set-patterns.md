@@ -139,3 +139,23 @@ Merge two lists by a shared key, then paginate items into rows of N columns:
 {c.output[].items[]:set(c.output[name=..name].rows[row=.row].items[])}
 ```
 Replace `2` with your column count.
+
+---
+
+## Split a string into an array, store it, then access by index
+```
+{d.policy.policyNo:split('_'):set(d.fixedPolicyNo)}
+{d.fixedPolicyNo[0]}
+```
+Use `[0]`, `[1]`, `[2]` etc. to access each segment. Useful when a composite key encodes multiple values separated by a delimiter.
+
+---
+
+## Split into an array, compute a derived index, store both
+`:len` returns the array size as a number and chains directly into math formatters:
+```
+{d.rawList:split(';'):set(d.items)}
+{d.items:len:div(2):floor:set(d.midIndex)}
+{d.midIndex:add(1):set(d.midIndex2)}
+```
+`d.items` is the split array, `d.midIndex` is the floor-divided midpoint, `d.midIndex2` is one past the midpoint. Reference `{d.items[d.midIndex]}` etc. to read slices.

@@ -1,7 +1,14 @@
 # Changelog
 
-## Unreleased
+## 1.3.0
 - Added `references/upgrade-guide.md` — Carbone upgrade guide covering v4→v5 migration and v5.0→v5.1.1 Studio Web Component breaking changes
+- Added `references/aliases.md` — production alias patterns: filter aliases, object-pick, frozen-index, loop shorthand, alias with fallback/arithmetic, looping over alias arrays
+- Added `references/practical-examples.md` — practical examples: date/time formatting combinations, optional address blocks, checkbox patterns, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, complement data `{c.}` patterns, `..` relative path inside formatter arguments
+- Expanded Day.js token table in `references/formatters.md` to all 40 tokens organized by category; added weekday-conditional block pattern (`{c.now:formatD(d):ifEQ(N):showBegin/showEnd}`)
+- Extended `references/practical-examples.md` with new patterns: `:add(0)` coercion before aggregation for string-encoded numbers; `abs():set()` / `div(-1):set()` for debit/credit display branching; `:aggMax` with a filter referencing a previously `:set` value via `..`; chained `:add` for summing sibling fields; `:prepend():append():html` order-of-operations
+- Updated `SKILL.md` validation checklist: merged double-quote rules (item 18), added spaces-in-tags rule (item 23), added double-colon `::` invalidity rule (item 24)
+- Updated `SKILL.md` frontmatter: added `when_to_use` trigger phrases, set `user-invocable: false` (background knowledge — Claude loads automatically, not a slash command)
+- Added prominent anti-hallucination warning to `SKILL.md`: Carbone is not JSONPath, Mustache, Handlebars, or Jinja2 — only documented syntax is valid
 
 ## 1.2.2
 - Added HH:mm pattern for `:formatI` with ISO 8601 durations in `references/formatters.md`
