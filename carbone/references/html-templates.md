@@ -1,5 +1,7 @@
 # Carbone HTML Templates Reference
 
+Read this file when the user asks about HTML templates, HTML to PDF conversion, inline CSS injection, PDF output options (page size, margins, orientation, headers/footers), ECharts or barcode embedding, `:html` in HTML context, or `<carbone-pdf-options>` / `<carbone-pdf-header/footer>`.
+
 Version: 5.0+ | Free feature | Renderer: Chromium-based (pixel-perfect PDF)
 
 HTML templates support the full Carbone feature set: substitutions, loops, conditions, formatters, charts, barcodes, hyperlinks, i18n, and all enterprise features.

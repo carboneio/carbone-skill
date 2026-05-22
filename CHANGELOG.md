@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+- Added "Read this file when…" trigger lines to `references/formatters.md`, `references/html-templates.md`, and `references/markdown-templates.md`
+- Sharpened trigger descriptions in `references/practical-examples.md`, `references/runtime-options.md`, and `references/aliases.md`
+
 ## 1.3.0
 - Added `references/upgrade-guide.md` — Carbone upgrade guide covering v4→v5 migration and v5.0→v5.1.1 Studio Web Component breaking changes
 - Added `references/aliases.md` — production alias patterns: filter aliases, object-pick, frozen-index, loop shorthand, alias with fallback/arithmetic, looping over alias arrays

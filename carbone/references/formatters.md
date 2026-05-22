@@ -1,5 +1,7 @@
 # Carbone Formatters — Complete Reference
 
+Read this file when verifying a formatter name, checking its parameters or return value, looking up date/number/currency formatting options, or reviewing deprecated formatters and their modern replacements.
+
 All formatters below are verified from official Carbone documentation. Do NOT use any formatter not listed here.
 
 ## Contents

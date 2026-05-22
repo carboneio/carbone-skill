@@ -1,6 +1,6 @@
 # Carbone — Practical Examples
 
-Read this file when the user asks about real-world Carbone usage, or combinations not covered by the individual reference files. Every section here shows something that is either absent from or only partially illustrated in SKILL.md and the other reference files.
+Read this file when the user asks about practical or real-world Carbone patterns: date/time formatting combinations, optional address blocks, checkbox rendering, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, complement data (`{c.}`), `..` relative path in formatter args, `:add(0)` coercion before aggregation, debit/credit display branching with `abs():set()` / `div(-1):set()`, `:aggMax` with a filtered reference, chained `:add` for sibling fields, or `:prepend():append():html` order-of-operations.
 
 ---
 

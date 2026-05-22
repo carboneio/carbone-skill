@@ -1,5 +1,7 @@
 # Carbone Markdown Templates Reference
 
+Read this file when the user asks about Markdown templates, loops in Markdown tables, converting Markdown to PDF/DOCX/ODT, or Markdown template limitations.
+
 Version: 5.0+ | Free feature
 Output formats: PDF, DOCX, ODT, PNG, JPG, MD
 

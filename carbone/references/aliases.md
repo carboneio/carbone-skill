@@ -1,6 +1,6 @@
 # Carbone — Alias Patterns
 
-Read this file when the user asks about aliases (`{#}` / `{$}`), shorthand data access, alias-as-filter, or parametrized aliases in real templates.
+Read this file when the user asks about aliases (`{#}` / `{$}`): filter aliases, object-pick, frozen-index, loop shorthand, alias with fallback or arithmetic, parametrized (function-style) aliases, or looping over an alias array.
 
 For the basic alias syntax, see SKILL.md §3. This file covers production patterns that go beyond the basics.
 

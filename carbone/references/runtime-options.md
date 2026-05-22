@@ -1,6 +1,6 @@
 # Carbone Runtime Options — `{o.}` Reference
 
-Read this file when the user asks about runtime options (`{o.}` tags) available in Carbone templates.
+Read this file when the user asks about runtime options (`{o.}` tags): timezone, language/locale, converter settings, complement data, hard refresh, pre-release feature flags, or any `{o.}` option.
 
 Runtime options are placed anywhere in the template — they are removed from output and apply globally to the render.
 
