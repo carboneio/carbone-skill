@@ -13,4 +13,5 @@ Runtime options are placed anywhere in the template — they are removed from ou
 | `{o.lang=en-US}` | Forces the language/locale; overrides the API option. Accepts upper or lowercase (v5.4.3+) |
 | `{o.converter=L}` | Forces the document converter: `L` = LibreOffice, `O` = OnlyOffice, `C` = Chrome (v5.4.3+) |
 | `{o.exportFormattedValuesAsText=true}` | Forces `:formatN` to output localized text strings instead of native XLSX number format. **XLSX templates only** (v5.4.3+) |
+| `{o.preReleaseFeatureIn=4025011}` | Activates **all** v4 pre-release features up to v4.25.11 — use when you need any v4 pre-release feature without specifying the exact version code |
 | `{o.preReleaseFeatureIn=5004002}` | Enables fix for combining direct object access with object iteration on the same object (v5.4.2, opt-in only) |

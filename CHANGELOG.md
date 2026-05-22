@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased
-- Added "Read this file when…" trigger lines to `references/formatters.md`, `references/html-templates.md`, and `references/markdown-templates.md`
-- Sharpened trigger descriptions in `references/practical-examples.md`, `references/runtime-options.md`, and `references/aliases.md`
+## 1.3.1
+- New patterns in reference files: `:t:aggStrD`, post-aggregation arithmetic, datetime normalization in-place (`:startOfD:formatD:set` and `:substr:set`), chart from indexed array with `:imageFit`
+- Added `{o.preReleaseFeatureIn=4025011}` to `references/runtime-options.md`
+- `SKILL.md`: universal formatter argument quoting rule (item 6), loop iterator casing best practice (§9), `user-invocable: true`
+- `extract-carbone-tags.py`: added `:image(width=N,height=N)` to `INVALID_FORMATTERS`
 
 ## 1.3.0
 - Added `references/upgrade-guide.md` — Carbone upgrade guide covering v4→v5 migration and v5.0→v5.1.1 Studio Web Component breaking changes

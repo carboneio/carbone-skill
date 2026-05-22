@@ -1,6 +1,6 @@
 # Carbone — Practical Examples
 
-Read this file when the user asks about practical or real-world Carbone patterns: date/time formatting combinations, optional address blocks, checkbox rendering, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, complement data (`{c.}`), `..` relative path in formatter args, `:add(0)` coercion before aggregation, debit/credit display branching with `abs():set()` / `div(-1):set()`, `:aggMax` with a filtered reference, chained `:add` for sibling fields, or `:prepend():append():html` order-of-operations.
+Read this file when the user asks about practical or real-world Carbone patterns: date/time formatting combinations, optional address blocks, checkbox rendering, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, post-aggregation arithmetic, complement data (`{c.}`), `..` relative path in formatter args, `:add(0)` coercion before aggregation, debit/credit display branching with `abs():set()` / `div(-1):set()`, `:aggMax` with a filtered reference, chained `:add` for sibling fields, or `:prepend():append():html` order-of-operations.
 
 ---
 
@@ -184,6 +184,12 @@ Always `:round(2)` before `:formatN` to avoid floating-point artifacts in the di
 {d.balance:div(-1):set(d.balanceNeg)}
 ```
 Reference `{d.balanceAbs}` for the magnitude display, then use a condition on the original `{d.balance}` to pick the correct sign label.
+
+**Post-aggregation arithmetic before storing** — any arithmetic formatter (`:mul`, `:div`, `:round`) may follow an aggregator before `:set`. The aggregated number is treated like any other value at that point:
+```
+{d.invoicingQualities[]:print(.totalPrice.quantity):aggSum():mul(1000):set(d.totalQuantityGrams)}
+```
+`:aggSum()` totals the extracted quantities; `:mul(1000)` converts units (e.g. tons → kg); `:set` stores the derived total. Chain `:round(2)` before `:set` when floating-point precision matters.
 
 ---
 

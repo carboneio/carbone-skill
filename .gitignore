@@ -7,3 +7,4 @@ draft-real-world-patterns*.md
 *.jsonl
 *.py
 .claude/
+draft*.md

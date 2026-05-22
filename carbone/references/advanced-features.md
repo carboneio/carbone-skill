@@ -71,6 +71,14 @@ JSON must contain a full ECharts v5 config:
 ```
 Compatible with: ODT, ODS, ODP, ODG, DOCX, PPTX, XLSX, HTML, PDF. Use `echarts@v5a` (not `echarts@v5`) for better SVG compatibility.
 
+**Chart from an indexed array** — when data contains an array of ECharts config objects, access each by index and chain `:imageFit` to fit the chart to the placeholder size:
+```
+{d.team_avg_chart[0]:chart:imageFit(contain)}
+{d.team_avg_chart[1]:chart:imageFit(contain)}
+{d.team_avg_chart[2]:chart:imageFit(contain)}
+```
+Each tag goes in a separate image placeholder alt-text. The number of placeholders in the template determines how many charts render.
+
 ---
 
 ## HTML content rendering — full reference (ENTERPRISE, v5+)

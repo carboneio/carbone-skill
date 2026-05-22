@@ -348,6 +348,13 @@ Used to compute aggregates over arrays. Can be used standalone (outside loop) or
 {d[i+1]}
 ```
 
+**Translate then aggregate distinct strings** — chain `:t` before `:aggStrD` to collect unique translated labels in one pass:
+```
+{d.modeling.zones[].type:t:aggStrD}
+{d.buildings[].equipments[].val[].val[].type:t:aggStrD}
+```
+`:t` translates each item's value via the i18n dictionary at render time; `:aggStrD` then deduplicates and joins the translated results. The separator defaults to `, `. Works at any nesting depth.
+
 ---
 
 ## Condition Formatters

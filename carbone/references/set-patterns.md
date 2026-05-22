@@ -1,6 +1,6 @@
 # Carbone `:set` — Advanced Patterns Reference
 
-Read this file when the user needs to solve complex data transformation problems using `:set`: building dynamic URLs, type conversion, date aggregation, JSON restructuring, flat list grouping, pagination into N-column rows, pairing sibling arrays, filtering a parent list based on child content, or creating arrays from static strings.
+Read this file when the user needs to solve complex data transformation problems using `:set`: building dynamic URLs, type conversion, date aggregation, normalizing datetime fields in-place, extracting substrings onto array items, JSON restructuring, flat list grouping, pagination into N-column rows, pairing sibling arrays, filtering a parent list based on child content, or creating arrays from static strings.
 
 ---
 
@@ -159,3 +159,27 @@ Use `[0]`, `[1]`, `[2]` etc. to access each segment. Useful when a composite key
 {d.midIndex:add(1):set(d.midIndex2)}
 ```
 `d.items` is the split array, `d.midIndex` is the floor-divided midpoint, `d.midIndex2` is one past the midpoint. Reference `{d.items[d.midIndex]}` etc. to read slices.
+
+---
+
+## Normalize datetime elements in-place with `:startOfD:formatD:set`
+
+For each item in an array, truncate an ISO datetime to the start of day, reformat as a date string, and store as a new field on that same item. This makes subsequent filters like `[date='2026-05-13']` and grouping by date reliable:
+```
+{d.flights.flight[].returnFlight.outboundFlight.arrivalDateTime:startOfD('day'):formatD('YYYY-MM-DD'):set(.date)}
+```
+- `:startOfD('day')` — snaps the datetime to midnight in the render timezone
+- `:formatD('YYYY-MM-DD')` — produces a consistent, sortable date string
+- `:set(.date)` — writes the result back as `.date` on each array item (relative path)
+
+Use this form when locale/timezone normalization matters (e.g. when input timestamps are in UTC but the report timezone is local).
+
+---
+
+## Extract date substring and store as new field
+
+When the source is already a consistent ISO string, `:substr(0,10)` is a simpler alternative that produces the same result without timezone conversion:
+```
+{d.flights.flight[].returnFlight.outboundFlight.arrivalDateTime:substr(0,10):set(.date)}
+```
+`"2026-05-13T15:45:00Z"` → `"2026-05-13"`. Use `:startOfD:formatD:set` instead when the input format is inconsistent or timezone normalization is required.

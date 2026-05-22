@@ -10,11 +10,11 @@ when_to_use: >
   "Markdown to PDF", "HTML to PDF", DOCX/XLSX/PPTX template with placeholders,
   invoice/contract/report template design, HTML template with CSS injection or charts,
   loop or condition syntax in a template.
-user-invocable: false
+user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.3.0"
+  version: "1.3.1"
   carbone_version: "5.6.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
@@ -423,6 +423,9 @@ Alternatives when you only need a flat string — no loop required:
 ### Prefer `:drop` over `hideBegin/hideEnd`
 `:drop` is simpler, cleaner, and removes the element without leaving empty space. Use `hideBegin/hideEnd` only when you need to hide large multi-element blocks.
 
+### Loop iterator casing
+Use lowercase `i` for loop iterators — `{d.array[i].field}` / `{d.array[i+1]}`. Carbone also accepts uppercase `I`, but lowercase is the convention in all official documentation and avoids confusion with alias names.
+
 ### Floating elements in loops
 Avoid floating images, shapes, or text boxes inside Carbone loops. Set their anchor to **"In line with text"** to prevent invalid output.
 
@@ -443,7 +446,7 @@ When asked to validate a Carbone tag, check:
 3. **No spaces in tag name** — `{d.first name}` is invalid → use `{d.firstName}`
 4. **Dot notation** — properties separated by `.`, arrays with `[index]`
 5. **Formatter separator** — `:` not `.` or `|`
-6. **Formatter params** — inside `()`, strings with spaces/commas need single quotes `'text'`
+6. **Formatter argument quoting** — arguments may be written with or without single quotes: `:formatD(DD/MM/YYYY)` and `:formatD('DD/MM/YYYY')` are both valid, as are `:convEnum(STATUS)` and `:convEnum('STATUS')`. Single quotes are **required** only when the argument contains a **space** — Carbone trims unquoted spaces (see item 19). Double quotes are never valid (see item 18)
 7. **Formatters must be chained, not nested** — `{d.value:add(20):sub(10)}` ✅ — `{d.value:add(20:sub(10))}` ❌ (nesting doesn't work)
 8. **Loop end-marker** — every `[i]` block must have its `[i+1]` end-marker row
 9. **`showBegin/showEnd` and `hideBegin/hideEnd` must always be paired** — a missing `showEnd` will break the document
