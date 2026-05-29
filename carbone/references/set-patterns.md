@@ -57,11 +57,11 @@ Then filter the parent loop normally:
 
 ---
 
-## Type conversion — convert a number stored as a string into a real integer
+## Type conversion — convert a string number into a real number
 ```
-{d.items[].data.amount:int:set(.amountInt)}
+{d.items[].data.amount:add(0):set(.amountAsNumber)}
 ```
-⚠️ `:int` only works for integers. Carbone cannot convert a float stored as a string into a real float type. Note `:int` is deprecated but remains the only way to perform this type coercion with `:set`.
+Coerce a numeric string to a real number by running it through any arithmetic formatter: `:add(0)`, `:sub(0)`, `:mul(1)`, or `:abs`. This works for both integers and floats. Avoid `:int` — it is marked UNRECOMMENDED in the formatter reference and only handles integers.
 
 ---
 

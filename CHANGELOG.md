@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.2
+- New patterns: extended `:and`/`:or` argument forms (`.prop`, absolute `d.`/`c.`, `$alias.field`); alias array aggregation (`{$alias[].field:aggSum}`); alias arrays inside native DOCX chart cells
+- `SKILL.md` item 22: acknowledged filter-expression alias exception (bare field name allowed when alias body is a filter expression)
+- `:transform`: added `in` unit (v5.4.0+ for PPTX/ODP)
+- `:html` compatibility: added HTML to the format list
+- `:drop`/`:keep` elements: unified element list and per-format support across `SKILL.md`, `formatters.md`, `html-templates.md`; clarified the `N` argument applies to `p` and `row` only
+- `:ellipsis`: clarified `maximum` is the truncation point, not the total output length
+- UNRECOMMENDED number formatters now ship inline replacement guidance: `:int` → `:add(0)` / `:abs`; `:toFixed` → `:round`; `:toEN`/`:toFR` → `:formatN` with `lang`
+- ECharts: recommended `echarts@v5a` as default, `echarts@v5` as legacy
+- Removed deprecated `:convDate` from the main Date Formatters table
+- Audit fixes: corrected invalid `d[i=0]invoice[i=0]` alias-shorthand claim; corrected `:barcode` options syntax (comma-separated `key:value`, not semicolon-separated string); switched address-block country example to `:ifEQ` for correct equality semantics; removed stray spaces around `=` in array-filter example; fixed two broken markdown table separators in `formatters.md`
+
 ## 1.3.1
 - New patterns in reference files: `:t:aggStrD`, post-aggregation arithmetic, datetime normalization in-place (`:startOfD:formatD:set` and `:substr:set`), chart from indexed array with `:imageFit`
 - Added `{o.preReleaseFeatureIn=4025011}` to `references/runtime-options.md`

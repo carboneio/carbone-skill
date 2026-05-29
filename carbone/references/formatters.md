@@ -40,7 +40,7 @@ All formatters below are verified from official Carbone documentation. Do NOT us
 | `:split(delimiter)` | v4.12.0+ | Split string into array | `'a,b,c':split(',')` → `["a","b","c"]` |
 | `:padl(targetLength, padString)` | v3.0.0+ | Left-pad string | `'3':padl(4,'0')` → `"0003"` |
 | `:padr(targetLength, padString)` | v3.0.0+ | Right-pad string | `'3':padr(4,'0')` → `"3000"` |
-| `:ellipsis(maximum)` | v4.12.0+ | Truncate with `...` | `'hello world':ellipsis(5)` → `"hello..."` |
+| `:ellipsis(maximum)` | v4.12.0+ | Truncate at `maximum` characters and append `...` (final length = `maximum` + 3 when truncated; unchanged when input already fits) | `'hello world':ellipsis(5)` → `"hello..."` |
 | `:prepend(text)` | v4.12.0+ | Add prefix | `'world':prepend('hello ')` → `"hello world"` |
 | `:append(text)` | v4.12.0+ | Add suffix | `'hello':append(' world')` → `"hello world"` |
 | `:replace(oldText, newText)` | v4.12.0+ | Find & replace all occurrences | `'foo bar':replace('foo','baz')` → `"baz bar"` |
@@ -64,10 +64,10 @@ All formatters below are verified from official Carbone documentation. Do NOT us
 | `:abs` | v4.12.0+ | Absolute value | `-10:abs` → `10` |
 | `:ceil` | v4.22.8+ | Round up to nearest integer | `1.05:ceil` → `2` |
 | `:floor` | v4.22.8+ | Round down to nearest integer | `1.05:floor` → `1` |
-| `:int` | v1.0.0+ | Convert to integer (UNRECOMMENDED) | — |
-| `:toFixed` | v1.0.0+ | Fixed decimal string (UNRECOMMENDED) | — |
-| `:toEN` | v1.0.0+ | English number format (UNRECOMMENDED) | — |
-| `:toFR` | v1.0.0+ | French number format (UNRECOMMENDED) | — |
+| `:int` | v1.0.0+ | Convert to integer (UNRECOMMENDED) — use `:add(0)`, `:sub(0)`, `:mul(1)`, or `:abs` to coerce a numeric string to a real number (works for floats too) | — |
+| `:toFixed` | v1.0.0+ | Fixed decimal string (UNRECOMMENDED) — use `:round(precision)` instead | — |
+| `:toEN` | v1.0.0+ | English number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=en-US}` runtime option | — |
+| `:toFR` | v1.0.0+ | French number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=fr-FR}` runtime option | — |
 
 **Math formula in formatters** — `add`, `mul`, `sub`, `div` accept simple expressions:
 ```
@@ -116,7 +116,6 @@ Input can be ISO 8601, Unix timestamp (ms), Unix timestamp in seconds (with `'X'
 | `:startOfD(unit, patternIn)` | v3.0.0+ | Set to start of unit (day/month/year/etc.) |
 | `:endOfD(unit, patternIn)` | v3.0.0+ | Set to end of unit |
 | `:diffD(toDate, unit, patternFromDate, patternToDate)` | v3.0.0+ | Difference between two dates |
-| `:convDate(patternIn, patternOut)` | — | Convert date format (older formatter) |
 
 **Available units for `:addD`/`:subD`/`:startOfD`/`:endOfD`**: `day`, `week`, `month`, `quarter`, `year`, `hour`, `minute`, `second`, `millisecond`
 
@@ -388,7 +387,7 @@ Used to compute aggregates over arrays. Can be used standalone (outside loop) or
 | `:drop(element, n?)` | Drop element if condition is true (ENTERPRISE) |
 | `:keep(element, n?)` | Keep element if condition is true, drop otherwise (ENTERPRISE) |
 
-**`:drop` / `:keep` elements**: `'row'` `'p'` `'img'` `'table'` `'chart'` `'shape'` `'slide'` `'item'` `'sheet'` `'h'`
+**`:drop` / `:keep` elements**: `'row'` `'col'` `'p'` `'img'` `'table'` `'chart'` `'shape'` `'slide'` `'item'` `'sheet'` `'h'` `'div'` `'span'`. The `n` argument (drop/keep N consecutive) works with `'p'` and `'row'` only. Per-format support: ODS → `col`/`row`/`img`/`sheet`. XLSX → `row`/`col`. PPTX → `col`/`row`/`img`/`p`/`shape`/`chart`/`table`. HTML → `table`/`col`/`row`/`p`/`div`/`span`. DOCX/ODT → all elements.
 
 Note: no formatters can be chained after `drop`, `keep`, `hideBegin`, `hideEnd`, `showBegin`, `showEnd`.
 
@@ -434,7 +433,7 @@ Tags using `:set` print **nothing**. Execution order is guaranteed within same d
 ## Key-value Mapping
 
 | Formatter | Version | Description |
-|---|---|
+|---|---|---|
 | `:convEnum('ENUM_NAME')` | v0.13.0+ | Map index or key to label via options enum |
 
 **Example** (with `enum: { ORDER_STATUS: ['pending','sent','delivered'] }`):
@@ -449,7 +448,7 @@ Tags using `:set` print **nothing**. Execution order is guaranteed within same d
 ## Advanced / Misc Formatters
 
 | Formatter | Version | Description |
-|---|---|
+|---|---|---|
 | `:formatR` | v5.0.4+ | Format a country/region code (in the data) to a human-readable name in the report's language. Accepts ISO 3166-1 Alpha-3 (`FRA`), Alpha-2 (`FR`), or Numeric (`250`). Example: `{d.countryCode:formatR}` |
 | `:imageFit(option)` | v3.2.0+ ENTERPRISE | Resize replacement image to placeholder (DOCX/ODT). `fillWidth` (default), `contain`, `fill` |
 | `:autoOrient` | v5.6.0+ ENTERPRISE | Auto-rotate a JPEG image according to its EXIF orientation (camera/smartphone). DOCX only. Use before `:imageFit` — compatible with `contain` and `fillWidth`, not with `fill`. Non-JPEG images are ignored. Example: `{d.photo:autoOrient:imageFit(contain)}` |
@@ -461,7 +460,7 @@ Tags using `:set` print **nothing**. Execution order is guaranteed within same d
 | `:appendTemplate(id, pos?)` | v5.0.3+ ENTERPRISE On-Premise | Generate another template with current data and append its PDF. `pos`: `'end'` (default) or `'start'`. Works in loops |
 | `:defaultURL(url)` | v3.1.6+ ENTERPRISE | Fallback URL if dynamic hyperlink is invalid. Place before `:html` when combined |
 | `:sign` | v5.0.0+ ENTERPRISE BETA | Place signature field; returns position coordinates in API response. Prints nothing |
-| `:transform(axis, unit)` | v4.22.11+ ENTERPRISE | Move shapes on X or Y axis. Requires `{o.preReleaseFeatureIn=4022011}`. axis: `'x'`/`'y'`. unit: `'cm'` `'mm'` `'inch'` `'pt'` `'in'` |
+| `:transform(axis, unit)` | v4.22.11+ ENTERPRISE | Move shapes on X or Y axis. Requires `{o.preReleaseFeatureIn=4022011}`. axis: `'x'`/`'y'`. unit: `'cm'` `'mm'` `'inch'` `'pt'` `'in'` (`in` added in v5.4.0 for PPTX/ODP) |
 | `:svgUpdate(attrName, selectorVal, selectorType?)` | v5-beta.14+ | Update SVG attribute on matching elements. Tag goes in SVG HTML comment. selectorType: `'id'`, `'id > *'`, `'id *'` (default). Supports: rect, circle, line, ellipse, polygon, polyline, path |
 | `:svgSelectiveUpdate(attrName, attrVal, selectorType?)` | v5-beta.14+ | Select SVG elements by current value and inject attribute. Same selectorType options |
 

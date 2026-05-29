@@ -119,7 +119,7 @@ Inject dynamic HTML comment:
 
 ### 3. Smart conditions — `:drop` / `:keep`
 
-HTML supports only: `table`, `row`, `p`
+HTML supports: `table`, `col`, `row`, `p`, `div`, `span`. The N-consecutive argument works with `p` and `row` only.
 
 ```html
 <!-- Drop entire table -->
@@ -178,7 +178,7 @@ Required JSON structure for `chartOptions`:
 }
 ```
 
-Supported versions: `echarts@v5` (default), `echarts@v5a` (optimized for SVG).
+Supported versions: `echarts@v5a` (recommended — optimized for SVG output), `echarts@v5` (legacy).
 Chart styling must be defined within the JSON. No external JS dependencies.
 
 ---
@@ -192,7 +192,7 @@ Use the `:barcode(type)` formatter in the `src` attribute of an `<img>` tag (no 
 <img src="{d.qrData:barcode(qrcode)}" width="200" height="200">
 
 <!-- EAN-13, size via formatter -->
-<img src="{d.productCode:barcode(ean13, 'width:200;height:100')}" alt="Barcode">
+<img src="{d.productCode:barcode(ean13, width:200, height:100)}" alt="Barcode">
 ```
 
 ---

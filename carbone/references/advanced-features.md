@@ -52,6 +52,12 @@ Insert a chart via `Insert > Chart`, edit the embedded Excel spreadsheet with Ca
 ```
 ⚠️ Each `[i]` expression must have its own `[i+1]` on the next row — you cannot use a single `[i+1]` for multiple `[i]` tags.
 
+Aliases work inside chart cells too — declare `{#income = d.income_type_summary}` in the document body, then loop the alias array:
+```
+{$income[i].itg_nm}
+{$income[i+1].itg_nm}
+```
+
 ### ODT/LibreOffice
 Insert a chart, edit the Data Table. Use `{bindChart(refValue) = d.tag}` in the Categories column to bind a JSON value to a chart reference value:
 ```
@@ -83,7 +89,7 @@ Each tag goes in a separate image placeholder alt-text. The number of placeholde
 
 ## HTML content rendering — full reference (ENTERPRISE, v5+)
 
-`:html` converts an HTML string to native document formatting (ODT/DOCX/PDF):
+`:html` converts an HTML string to native document formatting (ODT/DOCX/HTML/PDF):
 ```
 {d.richContent:html}
 {d.notes:convCRLF:html}    ← convert \n to <br> first

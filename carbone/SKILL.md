@@ -14,7 +14,7 @@ user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.3.1"
+  version: "1.3.2"
   carbone_version: "5.6.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
@@ -63,7 +63,7 @@ Search the first matching item by attribute value:
 {d[year=1999].name}
 {d[name='Back to the future'].year}
 {d[year=1999, meta.type='SF'].name}     ← multiple filters = AND
-{d.subArray[sub.b.c = .other].text}     ← variable filter (starts with .)
+{d.subArray[sub.b.c=.other].text}       ← variable filter (starts with .)
 {d.movies[year=1999]..country}          ← access parent via ..
 ```
 If the filter returns multiple rows, Carbone keeps only the **first** match.
@@ -218,10 +218,11 @@ Format limits: ODS → `col`/`row`/`img`/`sheet` only. XLSX → `row`/`col` only
 ### 6d. Logical operators
 `:ifEQ(v)` `:ifNE(v)` `:ifGT(v)` `:ifGTE(v)` `:ifLT(v)` `:ifLTE(v)` `:ifIN(v)` `:ifNIN(v)` `:ifEM()` `:ifNEM()` `:ifTE(type)`
 
-Chain with `:and(.prop)` or `:or(.prop)` (OR is the default between consecutive conditions):
-```
-{d.age:ifGTE(18):and(.country):ifEQ('FR'):show('Eligible'):elseShow('Not eligible')}
-```
+Chain with `:and(arg?)` or `:or(arg?)` (OR is the default between consecutive conditions). The argument selects what the next condition reads — accepted forms:
+- bare (no arg) — re-evaluate the same field: `{d.x:ifEM():or:ifEQ('N/A'):drop(row)}`
+- `.prop` — sibling on the same parent object: `{d.age:ifGTE(18):and(.country):ifEQ('FR'):show(…)}`
+- `d.absolute.path` / `c.absolute.path` — any node in the data or complement tree: `{d.row.last_page:ifEQ(true):and(d.total.shared_payee):ifEQ(true):keep(row,2)}`
+- `$alias.field` — switch context to a declared alias: `{$mailing.cc_name:ifNEM:or($mailing.payee):ifEM:drop(p)}`
 
 For real-world conditional patterns (optional blocks, table/row visibility, NaN guard, range checks, checkbox patterns, complement data branching) → `references/practical-examples.md`.
 
@@ -307,7 +308,7 @@ Carbone supports 107 barcode types. If the barcode value is missing or invalid, 
 For full scope/type tables, limitations, and `:bindColor` (legacy) → read `references/advanced-features.md`.
 
 ### 8d. HTML content rendering (ENTERPRISE, v5+)
-`:html` converts an HTML string to native document formatting (ODT/DOCX/PDF):
+`:html` converts an HTML string to native document formatting (ODT/DOCX/HTML/PDF):
 ```
 {d.richContent:html}
 {d.notes:convCRLF:html}    ← convert \n to <br> first
@@ -350,7 +351,7 @@ Move shapes/images on X or Y axis in ODP/PPTX/ODT:
 ```
 {d.offset:transform('x', 'cm')}
 ```
-Units: `cm`, `mm`, `inch`, `pt`. Write inside the shape's alt text or inside the shape itself.
+Units: `cm`, `mm`, `inch`, `pt`, `in` (`in` added in v5.4.0 for PPTX/ODP). Write inside the shape's alt text or inside the shape itself.
 
 ### 8j. SVG templates
 SVG files can be used as Carbone input templates. Write tags inside HTML comments (`<!-- {d.value:svgUpdate(...)} -->`). Use `:svgUpdate(attrName, selectorValue, selectorType)` to update attributes, or `:svgSelectiveUpdate` to select and inject. Full syntax → `references/advanced-features.md`.
@@ -472,7 +473,7 @@ When asked to validate a Carbone tag, check:
 19. **Space in `show()` without quotes** — `show(40 FT)` outputs `40FT`; use `show('40 FT')` — unquoted spaces are dropped
 20. **Attributes after `[i+1]` are ignored** — `{d.arr[i+1].name}` never reads `.name`; use plain `{d.arr[i+1]}`
 21. **Missing `.` between `[index]` and next key** — `{d.items[0]products.value}` gives empty output; must be `{d.items[0].products.value}`
-22. **Alias must start with a data path** — `{#flag=0:ifEM():hideBegin}` is invalid because `0` is not a Carbone data path; aliases must start with `d.`, `c.`, or a `$param` reference
+22. **Alias must start with a data path or a filter expression** — `{#flag=0:ifEM():hideBegin}` is invalid because `0` is not a Carbone data path. Aliases normally start with `d.`, `c.`, or a `$param` reference. Exception: a **filter-expression alias** (used inside `[]` brackets to share a reusable filter) starts with a bare field name, e.g. `{#incCrit = criticality.code!='-1'}` — see `references/aliases.md` "Filter aliases"
 23. **Never use spaces inside a tag** — Carbone trims spaces between any structural elements (`{`, `d`, `.`, field names, `[]`, `:`, `}`, etc.) so `{d.photo :imageFit(contain)}` technically works, but this is bad practice and should never be written intentionally
 24. **Double colon `::` is invalid** — `{d.value:aggSum::formatN(2)}` creates an empty formatter name and will cause a rendering error; remove the extra colon
 

@@ -32,14 +32,14 @@ Read this file when the user asks about practical or real-world Carbone patterns
 {d.address.street:ifNEM():showBegin}{d.address.street}{d.address.street:showEnd}
 {d.address.unit:ifNEM():showBegin}{d.address.unit}{d.address.unit:showEnd}
 {d.address.city:ifNEM():showBegin}{d.address.city}{d.address.city:showEnd}
-{d.address.country:ifNIN(Germany):showBegin}{d.address.country}{d.address.country:showEnd}
+{d.address.country:ifEQ(Germany):hideBegin}{d.address.country}{d.address.country:hideEnd}   ← value filter: hide the country line when it equals 'Germany'
 ```
 Shorter alternative — one `:drop(row)` tag per paragraph, condition inverted. The tag prints nothing; the row disappears entirely when the field is empty:
 ```
 {d.address.street}{d.address.street:ifEM():drop(p)}
 {d.address.unit}{d.address.unit:ifEM():drop(p)}
 {d.address.city}{d.address.city:ifEM():drop(p)}
-{d.address.country}{d.address.country:ifIN(Germany):drop(p)}
+{d.address.country}{d.address.country:ifEQ(Germany):drop(p)}   ← value filter: drop the country line when it equals 'Germany'
 ```
 Place the `:drop(p)` tag anywhere in the paragraph alongside the display field. No blank paragraph are left in the output.
 

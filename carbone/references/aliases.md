@@ -100,12 +100,10 @@ Use an alias to grab one specific item from an array by filter, then access its 
 `[i=0]` pins the alias to index 0. Shortens repeated access to first-element fields:
 
 ```
-{#inv = d[i=0]invoice[i=0]}
+{#inv = d[i=0].invoice[i=0]}
 {$inv.invoiceDate:formatD(L)}
 {$inv.totalAmount:formatC(2)}
 ```
-
-Note: `d[i=0]invoice[i=0]` (no dot between the array accessor and the next key) is a valid shorthand for `d[i=0].invoice[i=0]`.
 
 ---
 
@@ -164,3 +162,17 @@ An alias that points to an array can be iterated with `[i]` / `[i+1]`:
 ```
 
 The loop end-marker uses `{$ip[i+1]}` — the alias name, not the original path.
+
+---
+
+## Aggregating an alias array
+
+The silent `[]` iterator and aggregators work on alias-bound arrays the same way they work on `d.` arrays:
+
+```
+{#income = d.income_type_summary}
+{$income[].percentage:aggSum:formatN(0)}
+{$income[].amount:print(.tax):aggSum}
+```
+
+Useful when the same array is used both for a visible loop and for a separate total cell — declare the alias once, then reuse it for the aggregation.
