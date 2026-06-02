@@ -14,7 +14,7 @@ user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.3.2"
+  version: "1.3.3"
   carbone_version: "5.6.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
@@ -476,6 +476,7 @@ When asked to validate a Carbone tag, check:
 22. **Alias must start with a data path or a filter expression** — `{#flag=0:ifEM():hideBegin}` is invalid because `0` is not a Carbone data path. Aliases normally start with `d.`, `c.`, or a `$param` reference. Exception: a **filter-expression alias** (used inside `[]` brackets to share a reusable filter) starts with a bare field name, e.g. `{#incCrit = criticality.code!='-1'}` — see `references/aliases.md` "Filter aliases"
 23. **Never use spaces inside a tag** — Carbone trims spaces between any structural elements (`{`, `d`, `.`, field names, `[]`, `:`, `}`, etc.) so `{d.photo :imageFit(contain)}` technically works, but this is bad practice and should never be written intentionally
 24. **Double colon `::` is invalid** — `{d.value:aggSum::formatN(2)}` creates an empty formatter name and will cause a rendering error; remove the extra colon
+25. **An alias cannot reference another alias** — neither as the right-hand side of a declaration (`{#x = $y}`) nor as a formatter argument inside one (`{#x = d.value:ifEM:show($y)}`). An alias declaration's right-hand side must be built only from `d.`/`c.` data paths or a filter expression — no `{$alias}` references anywhere inside. To pull an aliased object's sibling into a condition argument, use a relative path (`.field` / `..field`) instead
 
 ---
 

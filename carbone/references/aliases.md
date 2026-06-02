@@ -16,6 +16,8 @@ For the basic alias syntax, see SKILL.md §3. This file covers production patter
 
 Aliases are **shortcuts**, not variables — they resolve to the data path at the point of use. To store a *computed result*, use `:set` (see `set-patterns.md`).
 
+**Restriction**: an alias's right-hand side must be built from `d.`/`c.` data paths or a filter expression — it cannot reference another alias. Both `{#a = $b}` and `{#a = d.value:ifEM:show($b)}` are invalid (see SKILL.md item 25).
+
 **Parametrized aliases** act like functions:
 ```
 {#mealOf($weekday) = d.meals[weekday=$weekday]}

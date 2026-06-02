@@ -380,12 +380,19 @@ Used to compute aggregates over arrays. Can be used standalone (outside loop) or
 
 | Formatter | Description |
 |---|---|
-| `:show(msg)` | Print `msg` if condition is true |
+| `:show(msg)` | Print `msg` if condition is true; if condition is false and no `:elseShow` follows, returns the original input value unchanged (single conditional only — see "Fallthrough" note below) |
 | `:elseShow(msg)` | Print `msg` if condition is false |
 | `:showBegin` / `:showEnd` | Show block between tags if condition is true |
 | `:hideBegin` / `:hideEnd` | Hide block between tags if condition is true |
 | `:drop(element, n?)` | Drop element if condition is true (ENTERPRISE) |
 | `:keep(element, n?)` | Keep element if condition is true, drop otherwise (ENTERPRISE) |
+
+**Fallthrough on `:show` without `:elseShow`** — a single condition (`:ifEQ`, `:ifNE`, `:ifGT`, `:ifGTE`, `:ifLT`, `:ifLTE`, `:ifIN`, `:ifNIN`, `:ifEM`, `:ifNEM`, `:ifTE`) followed by `:show(...)` with no `:elseShow` returns the **original input value** when the condition is false (Carbone docs call this the "initial marker"). This enables override-only patterns:
+```
+{d.display:ifEQ('Other'):show(..otherText)}
+```
+When `display = 'Other'` → prints `otherText`. When `display = '901 Gass Blvd'` → condition false, no `:elseShow`, so the original `'901 Gass Blvd'` passes through. Equivalent to `:ifEQ('Other'):show(..otherText):elseShow(.display)` without restating the input path.
+**Caveat — chains render nothing on no-match**: in a chain like `{d.currency:ifEQ(USD):show($):ifEQ(EUR):show(€)}`, a no-match renders nothing. Each `:show` consumes the marker for the next condition, so the fallthrough applies to a single conditional only.
 
 **`:drop` / `:keep` elements**: `'row'` `'col'` `'p'` `'img'` `'table'` `'chart'` `'shape'` `'slide'` `'item'` `'sheet'` `'h'` `'div'` `'span'`. The `n` argument (drop/keep N consecutive) works with `'p'` and `'row'` only. Per-format support: ODS → `col`/`row`/`img`/`sheet`. XLSX → `row`/`col`. PPTX → `col`/`row`/`img`/`p`/`shape`/`chart`/`table`. HTML → `table`/`col`/`row`/`p`/`div`/`span`. DOCX/ODT → all elements.
 

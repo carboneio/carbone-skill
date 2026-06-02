@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.3
+- New rule (`formatters.md`): fallthrough behavior of `:show` without `:elseShow` — a single conditional returns the original input ("initial marker") on false; chains render nothing on no-match
+- New rule (`SKILL.md` item 25): an alias cannot reference another alias, neither as the right-hand side (`{#x = $y}`) nor inside a formatter argument (`{#x = d.value:ifEM:show($y)}`); echoed in `aliases.md` fundamentals
+- New recommendation (`practical-examples.md`): prefer relative paths (`..field` / `.field`) over nesting `{$alias}` or `{d...}` inside `:show()` arguments
+
 ## 1.3.2
 - New patterns: extended `:and`/`:or` argument forms (`.prop`, absolute `d.`/`c.`, `$alias.field`); alias array aggregation (`{$alias[].field:aggSum}`); alias arrays inside native DOCX chart cells
 - `SKILL.md` item 22: acknowledged filter-expression alias exception (bare field name allowed when alias body is a filter expression)

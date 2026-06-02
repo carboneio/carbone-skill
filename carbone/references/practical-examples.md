@@ -326,6 +326,13 @@ Use absolute paths when the field to add is not a sibling of the current value.
 
 SKILL.md documents `..` for navigating up one level in a data path (e.g. `{d.child..parentProp}`). The same notation works **inside formatter arguments** to reference a field at a higher level in the hierarchy.
 
+**Use `..` (or `.`) instead of nesting a tag inside `:show()`** — to display a different field as the output of a condition, reference it with a relative path rather than embedding a full `{d...}` or `{$alias}` tag inside the argument. The relative path is shorter, and it avoids placing an alias in argument position (an alias cannot be derived from another alias — see SKILL.md item 25).
+```
+{d.select.display:ifEQ('Other'):show(..freeText)}   ← relative path: preferred
+{d.select.display:ifEQ('Other'):show({$dy.freeText})}   ← nested alias tag: avoid
+```
+
+
 Given:
 ```json
 {
