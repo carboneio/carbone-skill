@@ -17,7 +17,6 @@ All formatters below are verified from official Carbone documentation. Do NOT us
 - [Store and Transform — `:set`](#store-and-transform--set-enterprise-v5--v4-with-prereleasefeaturein)
 - [Key-value Mapping](#key-value-mapping)
 - [Advanced / Misc Formatters](#advanced--misc-formatters)
-- [`:html` Formatter — Full Reference](#html-formatter--full-reference-enterprise-v5)
 - [`:color` Formatter — Full Reference](#color-formatter--full-reference-enterprise-v417)
 - [PDF Form Formatters](#pdf-form-formatters)
 
@@ -35,7 +34,7 @@ All formatters below are verified from official Carbone documentation. Do NOT us
 | `:printJSON` | v4.23.0+ | Stringify object/array to JSON string | `[1,2]:printJSON` → `"[1,2]"` |
 | `:unaccent` | v1.1.0+ | Remove accents | `'crème':unaccent` → `"creme"` |
 | `:convCRLF` | v4.1.0+ | Convert `\n`/`\r\n` to document line breaks | Supported in DOCX/PPTX/ODT/ODP/ODS |
-| `:html` | v5.0+ ENTERPRISE | Render HTML string as native document formatting — [see full reference](#html-formatter--full-reference-enterprise-v5) | ODT/DOCX/PDF — use `:convCRLF:html` for newlines |
+| `:html` | v5.0+ ENTERPRISE | Render HTML string as native document formatting. Templates: ODT, DOCX, HTML. Full reference → `references/advanced-features.md` "`:html` Formatter — Full Reference" | `{d.richContent:html}` |
 | `:substr(begin, end, wordMode)` | v4.18.0+ | Slice string | `'foobar':substr(0,3)` → `"foo"` |
 | `:split(delimiter)` | v4.12.0+ | Split string into array | `'a,b,c':split(',')` → `["a","b","c"]` |
 | `:padl(targetLength, padString)` | v3.0.0+ | Left-pad string | `'3':padl(4,'0')` → `"0003"` |
@@ -464,65 +463,12 @@ Tags using `:set` print **nothing**. Execution order is guaranteed within same d
 | `:color(scope, type)` | v4.17.0+ ENTERPRISE | Apply dynamic hex color to text, cells, rows, or shapes — [see full reference](#color-formatter--full-reference-enterprise-v417) |
 | `:appendFile(where?)` | v4.22.0+ ENTERPRISE | Append PDF at end (`'end'`, default) or `'start'` of generated PDF |
 | `:attachFile(name, type)` | v4.23.0+ ENTERPRISE | Attach file inside PDF (Factur-X, ZUGFeRD). Auto-detects Factur-X level when filename is `'factur-x.xml'` |
-| `:appendTemplate(id, pos?)` | v5.0.3+ ENTERPRISE On-Premise | Generate another template with current data and append its PDF. `pos`: `'end'` (default) or `'start'`. Works in loops |
+| `:appendTemplate(templateIdOrVersionId, position?)` | v5.0.3+ ENTERPRISE On-Premise | Generate another template with current data and append its PDF. `position`: `'end'` (default) or `'start'`. Works in loops. **PDF output only** (silently ignored otherwise). Only `lang`, `currency`, `enum`, `converter`, `translations`, and complement data are forwarded to the nested template. No recursion |
 | `:defaultURL(url)` | v3.1.6+ ENTERPRISE | Fallback URL if dynamic hyperlink is invalid. Place before `:html` when combined |
 | `:sign` | v5.0.0+ ENTERPRISE BETA | Place signature field; returns position coordinates in API response. Prints nothing |
 | `:transform(axis, unit)` | v4.22.11+ ENTERPRISE | Move shapes on X or Y axis. Requires `{o.preReleaseFeatureIn=4022011}`. axis: `'x'`/`'y'`. unit: `'cm'` `'mm'` `'inch'` `'pt'` `'in'` (`in` added in v5.4.0 for PPTX/ODP) |
 | `:svgUpdate(attrName, selectorVal, selectorType?)` | v5-beta.14+ | Update SVG attribute on matching elements. Tag goes in SVG HTML comment. selectorType: `'id'`, `'id > *'`, `'id *'` (default). Supports: rect, circle, line, ellipse, polygon, polyline, path |
 | `:svgSelectiveUpdate(attrName, attrVal, selectorType?)` | v5-beta.14+ | Select SVG elements by current value and inject attribute. Same selectorType options |
-
----
-
-## `:html` Formatter — Full Reference (ENTERPRISE, v5+)
-
-Compatible with: ODT, DOCX, HTML, PDF.
-
-### Supported HTML elements
-
-| Category | Elements | Notes |
-|---|---|---|
-| Text formatting | `<b>` `<strong>` `<i>` `<em>` `<u>` `<s>` `<del>` | Always supported |
-| Structure | `<p>` `<br>` | Always supported |
-| Lists | `<ul>` `<ol>` `<li>` | Always supported |
-| Links | `<a href="...">` | URL validated; use `:defaultURL` for fallback |
-| Images | `<img src="..." width="X" height="Y">` | URL or Data-URI; size in px; default 5cm if missing |
-| Headings | `<h1>` `<h2>` `<h3>` `<h4>` `<h5>` `<h6>` | Requires `{o.preReleaseFeatureIn=5002000}` |
-| Tables | `<table>` `<tr>` `<th>` `<td>` with `colspan`/`rowspan` | Requires `{o.preReleaseFeatureIn=5002000}` (introduced in v5.0.9, significant fixes in v5.2.0 — use 5002000) |
-
-**Not supported** (ignored): `<tbody>` `<thead>` `<caption>`, external stylesheets, `<style>` elements, CSS classes, CSS IDs.
-
-### Supported CSS (inline `style` attribute only)
-
-Support depends on the **template format**:
-
-- **HTML template** → any inline CSS works, no restrictions (rendered by Chromium)
-- **DOCX or ODT template** → only the following properties are supported:
-
-| Property | Values |
-|---|---|
-| `color` | text color |
-| `background-color` | background color |
-| `break-before` | `page` — insert page break before `<p>` (requires `{o.preReleaseFeatureIn=5002000}`) |
-| `break-after` | `page` — insert page break after `<p>` (requires `{o.preReleaseFeatureIn=5002000}`) |
-
-Supported color formats for DOCX/ODT: hex (`#FF00BB`), RGB (`rgb(31,120,50)`), HSL (`hsl(120,75,25)`), named CSS colors (`red`, `lightseagreen`, etc.)
-
-### Options (combinable with comma)
-
-| Option | Effect | Example |
-|---|---|---|
-| `inline` | Render inside current paragraph. Only: `<a>` `<b>` `<strong>` `<em>` `<i>` `<s>` `<del>` `<u>` | `{d.v:html(inline)}` |
-| `nospace` | Remove empty paragraph added after block elements | `{d.v:html(nospace)}` |
-| `tabletheme:Name` | Apply named Word table theme (DOCX only) | `{d.v:html(tabletheme:GridTable2-Accent3)}` |
-| `headingtheme:prefix` | Use custom heading styles `prefix1`…`prefix6` | `{d.v:html(headingtheme:my-theme-)}` |
-
-Combine: `{d.value:html(nospace,headingtheme:my-theme-)}`
-
-### Font and paragraph behaviour
-- HTML content **inherits** font family and size from the template paragraph where the tag is placed
-- Text alignment from the template is **not** retained
-- By default, `:html` renders content in a **new paragraph**. Use `inline` to stay in the current paragraph
-- Tab characters: use `&ensp;` or `&emsp;` — do NOT use `&#9;` (collapsed to space by HTML parsers)
 
 ---
 

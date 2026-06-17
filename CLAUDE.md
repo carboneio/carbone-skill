@@ -13,6 +13,7 @@
 
 ### Cross-check against official Carbone docs
 - [ ] Spot-check formatter signatures, argument order, unit lists, and version requirements against carbone.io documentation for anything new or modified in this release — drift between the skill and official docs is the most common source of incorrect AI suggestions
+- [ ] For deeper verification (or pre-release audits), use `https://carbone.io/llms-full.txt` as the canonical single-file source and diff key sections against the skill — catches drift before customers do
 
 ### Versioning
 - [ ] Pre-release check — confirm no alpha/beta/RC tags already exist for the version you're about to bump to (`gh release list -R carboneio/carbone-skill` or the GitHub releases page)

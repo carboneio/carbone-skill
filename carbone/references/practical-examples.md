@@ -1,6 +1,6 @@
 # Carbone — Practical Examples
 
-Read this file when the user asks about practical or real-world Carbone patterns: date/time formatting combinations, optional address blocks, checkbox rendering, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, post-aggregation arithmetic, complement data (`{c.}`), `..` relative path in formatter args, `:add(0)` coercion before aggregation, debit/credit display branching with `abs():set()` / `div(-1):set()`, `:aggMax` with a filtered reference, chained `:add` for sibling fields, or `:prepend():append():html` order-of-operations.
+Read this file when the user asks about practical or real-world Carbone patterns: date/time formatting combinations, optional address blocks, checkbox rendering, `:ifEQ(NaN)` guard, range checks with `:and`, invoice aggregation chains, post-aggregation arithmetic, complement data (`{c.}`), `..` relative path in formatter args, `:add(0)` coercion before aggregation, debit/credit display branching with `abs():set()` / `div(-1):set()`, `:aggMax` with a filtered reference, or chained `:add` for sibling fields.
 
 ---
 
@@ -195,7 +195,7 @@ Reference `{d.balanceAbs}` for the magnitude display, then use a condition on th
 
 ## Percentage and ratio patterns
 
-**Display a 0–1 ratio as a percentage**:
+**Display a 0–1 ratio as a percentage (any non-spreadsheet template, or a plain-text XLSX/ODS cell)** — multiply by 100 and append the `%` character yourself:
 ```
 {d.completionRatio:mul(100):formatN(0)} %
 ```
@@ -205,6 +205,12 @@ Reference `{d.balanceAbs}` for the magnitude display, then use a condition on th
 {d.stats.passed:mul(100):div(.logicallyTested):round(2)}%
 {d.stats.failed:mul(100):div(.logicallyTested):round(2)}%
 ```
+
+**Display a percentage in an XLSX cell that has a native `%` format** — keep the cell's Excel percentage format (e.g. `0.00%`), inject the raw 0–1 decimal, and add `:formatN` so Carbone writes a **native number** rather than text:
+```
+{d.value:formatN}     ← cell formatted 0.00% → 0.032 renders as 3.20%
+```
+Do NOT pre-multiply by 100 here — the cell format already does ×100 and appends `%`. The cell format controls how many decimals are shown; the precision argument to `:formatN(...)` is **ignored in XLSX/ODS** (see `references/xlsx-tips.md`), so `:formatN` and `:formatN(0)` behave identically. Use the `:mul(100):append('%')` text approach above for all other template formats (anything that isn't XLSX/ODS), or for a plain-text XLSX/ODS cell with no percentage format.
 
 ---
 
@@ -278,11 +284,6 @@ No nested loop tag needed — the `[]` iterator produces no output rows.
 {d.costs.materials:add(.labor):add(.overhead):div(.units)}
 ```
 Each `.field` is relative to the same parent object as the starting field.
-
-**Wrap dynamic HTML content before rendering** — `:prepend` and `:append` operate on the raw string; `:html` then renders the assembled result. Order matters — reversing it would render HTML before the wrapper tags are added:
-```
-{d.htmlContent:prepend('<ul>'):append('</ul>'):html}
-```
 
 **Filter, multiply sibling, aggregate** — combine array filter with per-item arithmetic before aggregating:
 ```

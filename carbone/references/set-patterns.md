@@ -55,6 +55,24 @@ Then filter the parent loop normally:
 {d.items[hasTarget=true, i+1].name}
 ```
 
+### Relative `:set` dot rule
+
+A single dot `.X` writes `X` as a sibling of the value being read (inside its direct container). Each additional dot moves the write target one container up. For a chain reading `d.A[].B[].C.name`:
+
+- `:set(.X)` → inside `C` (sibling of `name`)
+- `:set(..X)` → inside `B[i]` (sibling of `C`)
+- `:set(...X)` → inside `A[i]` (sibling of `B`)
+
+Add more dots to go further up — there is no fixed limit. Each extra dot climbs one more container level, and you can keep climbing all the way up to the root element if needed.
+
+A **non-partitioned aggregator** followed by a relative `:set` writes the **same aggregated value onto every item at the target level**:
+```
+{d.orders[].lines[].product.name:aggStrD:set(...productList)}
+```
+After this runs, every `d.orders[i]` holds the same combined string, so `{d.orders[i].productList}` (or `{$o[i].productList}` via an alias) prints the full list regardless of `i`. Add a `partitionBy` argument to `:aggStrD(separator, partitionBy?)` if you want a per-group value instead.
+
+**Recommendation**: prefer absolute `:set(c.X)` for clarity — it removes dot-counting entirely, and the resulting `{c.X}` works in any section (including DOCX/ODT headers and footers) with no loop context required. Reserve relative `:set` for cases where the consumer is inside the same loop and the alternative would be more verbose.
+
 ---
 
 ## Type conversion — convert a string number into a real number

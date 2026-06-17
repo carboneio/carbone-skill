@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.0
+- New reference file `docx-tips.md`: DOCX/ODT header/body/footer section rules. Header, body, and footer are independent sections — a Carbone loop must be fully contained within one section; spanning `[i]` and `[i+1]` across sections triggers a "missing i+1" error
+- New recipe (`docx-tips.md`): three patterns for displaying a body-loop value in a header or footer — direct aggregator in the target section, `:set(c.X)` round-trip read globally, or floating-text-box hack (officially recommended by Carbone) with the anchor staying in the loop's section and only the visual position moved over the target section
+- New rule (`set-patterns.md`): relative `:set` dot ladder — `.X` writes inside the value's direct container, each extra dot climbs one container level up (up to the root); a non-partitioned aggregator + relative `:set` writes the same value onto every item at the target level; recommendation to prefer absolute `:set(c.X)` for clarity and cross-section reads
+- New section (`xlsx-tips.md`): cell number formats only apply to native numeric cells; `:formatN` is the only way to force native-number output in XLSX/ODS (arithmetic like `:mul(1)` / `:add(0)` does not change the output type); the `:formatN` precision argument is ignored in XLSX/ODS — the cell format controls decimal display
+- Split percentage patterns in `practical-examples.md` into two cases: native XLSX/ODS `%`-formatted cell (`{d.value:formatN}` only — do NOT pre-multiply) vs all other template formats (`:mul(100):append('%')`)
+- `SKILL.md` §9 Spreadsheets bullet: cross-reference to `xlsx-tips.md` so percentage/currency/date cell-format behavior is discoverable from the main page
+- `SKILL.md` reference list: added `docx-tips.md` entry with trigger phrases for Word/LibreOffice header/footer questions and "missing i+1" errors
+- Updated for Carbone v5.8.0: bumped `carbone_version`; documented new runtime option `{o.styleSource=templateOrVersionId}` (apply style from another DOCX/ODT template to a Markdown template); noted loose-equality behavior in array search and lookup since v5.7.0 (`[year=1999]` matches both numeric and string)
+- `:appendTemplate` corrections (cross-check vs official docs): added "PDF output only" constraint (silently ignored otherwise); replaced inaccurate "all render options forwarded" with the actual six (`lang`, `currency`, `enum`, `converter`, `translations`, complement); added no-recursion rule; expanded signature to `(templateIdOrVersionId, position?)`; fixed example to the official inline loop form
+- Consolidated all `:html` formatter content into a single canonical location (`advanced-features.md` "`:html` Formatter — Full Reference"): merged the duplicate "Full Reference" section that lived in `formatters.md`, absorbed the wrap/conditional/`:convCRLF:html`/`:defaultURL:html` examples from `practical-examples.md` and `html-templates.md`, and replaced the originals with short pointers. Corrected "ODT/DOCX/HTML/PDF" framing — PDF is not a Carbone template format, only a conversion output
+- `SKILL.md` footer: added three official-docs URLs (HTML page, `llms.txt` index, `llms-full.txt` single-file source for verification & diffs)
+- `CLAUDE.md` publishing checklist: expanded with cross-file consistency, official-docs cross-check (with `llms-full.txt` pointer), and concrete "optimised for AI agents" criteria
+
 ## 1.3.3
 - New rule (`formatters.md`): fallthrough behavior of `:show` without `:elseShow` — a single conditional returns the original input ("initial marker") on false; chains render nothing on no-match
 - New rule (`SKILL.md` item 25): an alias cannot reference another alias, neither as the right-hand side (`{#x = $y}`) nor inside a formatter argument (`{#x = d.value:ifEM:show($y)}`); echoed in `aliases.md` fundamentals

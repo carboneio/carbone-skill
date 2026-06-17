@@ -1,6 +1,6 @@
 # Carbone Advanced Features Reference
 
-Read this file when the user asks for full details on: the `:color` formatter (scopes, types, limitations, `:bindColor`), `:html` rendering options and page breaks, native charts (DOCX, ODT/LibreOffice `bindChart`, ECharts), hyperlink edge cases, SVG templates, ODT dynamic forms, or removing placeholder images when value is empty.
+Read this file when the user asks for full details on: the `:color` formatter (scopes, types, limitations, `:bindColor`), the `:html` formatter (full reference — supported elements, CSS, options, page breaks, entities, common patterns), native charts (DOCX, ODT/LibreOffice `bindChart`, ECharts), hyperlink edge cases, SVG templates, ODT dynamic forms, or removing placeholder images when value is empty.
 
 ---
 
@@ -87,32 +87,101 @@ Each tag goes in a separate image placeholder alt-text. The number of placeholde
 
 ---
 
-## HTML content rendering — full reference (ENTERPRISE, v5+)
+## `:html` Formatter — Full Reference (ENTERPRISE, v5+)
 
-`:html` converts an HTML string to native document formatting (ODT/DOCX/HTML/PDF):
+`:html` converts an HTML string into native document formatting. Use it whenever JSON data contains an HTML payload that must render as styled content rather than escaped text. Without `:html`, the `<` and `>` characters are escaped and the raw HTML is shown as text.
+
 ```
 {d.richContent:html}
-{d.notes:convCRLF:html}    ← convert \n to <br> first
+{d.notes:convCRLF:html}    ← convert \r\n / \n to native line breaks first; with :html, \n becomes <br> (v3.5.3+)
 ```
 
-**`:html` options** (passed as argument):
-- `{d.content:html(inline)}` — render HTML inline within the current paragraph (only `a`, `b`, `strong`, `em`, `i`, `s`, `del`, `u` tags supported)
-- `{d.content:html(nospace)}` — render without adding extra empty paragraphs after `<p>` tags
-- `{d.content:html(tabletheme:GridTable2-Accent3)}` — apply a specific Word table theme to injected tables (DOCX only)
-- `{d.content:html(headingtheme:my-theme-)}` — apply a custom heading theme prefix (themes must be named `my-theme-1` through `my-theme-6` in the template)
+**Compatible templates**: ODT, DOCX, HTML (PDF is reached via conversion from these — PDF is not a Carbone template format).
 
-**Page breaks inside `:html`** (requires `{o.preReleaseFeatureIn=5002000}`, applies to `<p>` only, not in headers/footers/table cells):
+### Supported HTML elements
+
+| Category | Elements | Notes |
+|---|---|---|
+| Text formatting | `<b>` `<strong>` `<i>` `<em>` `<u>` `<s>` `<del>` | Always supported |
+| Structure | `<p>` `<br>` | Always supported |
+| Lists | `<ul>` `<ol>` `<li>` | Always supported |
+| Links | `<a href="...">` | URL validated; use `:defaultURL` for fallback |
+| Images | `<img src="..." width="X" height="Y">` | URL or Data-URI; size in px; default 5cm if missing |
+| Headings | `<h1>` `<h2>` `<h3>` `<h4>` `<h5>` `<h6>` | Requires `{o.preReleaseFeatureIn=5002000}` |
+| Tables | `<table>` `<tr>` `<th>` `<td>` with `colspan`/`rowspan` | Requires `{o.preReleaseFeatureIn=5002000}` (introduced in v5.0.9, significant fixes in v5.2.0 — use 5002000) |
+
+**Not supported** (ignored): `<tbody>` `<thead>` `<caption>`, external stylesheets, `<style>` elements, CSS classes, CSS IDs.
+
+### Supported CSS (inline `style` attribute only)
+
+Support depends on the **template format**:
+
+- **HTML template** → any inline CSS works, no restrictions (rendered by Chromium)
+- **DOCX or ODT template** → only the following properties are supported:
+
+| Property | Values |
+|---|---|
+| `color` | text color |
+| `background-color` | background color |
+| `break-before` | `page` — insert page break before `<p>` (requires `{o.preReleaseFeatureIn=5002000}`) |
+| `break-after` | `page` — insert page break after `<p>` (requires `{o.preReleaseFeatureIn=5002000}`) |
+
+Supported color formats for DOCX/ODT: hex (`#FF00BB`), RGB (`rgb(31,120,50)`), HSL (`hsl(120,75,25)`), named CSS colors (`red`, `lightseagreen`, etc.).
+
+Page-break example:
 ```html
 <p style="break-before:page">New page starts here</p>
 <p style="break-after:page">Page break after this</p>
 ```
+Page breaks apply to `<p>` only — not allowed in headers, footers, or table cells.
 
-**HTML entities in `:html`** (v5.5.0+): The `:html` formatter supports named, decimal, and hexadecimal HTML entities:
+### Options (combinable with comma)
+
+| Option | Effect | Example |
+|---|---|---|
+| `inline` | Render inside current paragraph. Only: `<a>` `<b>` `<strong>` `<em>` `<i>` `<s>` `<del>` `<u>` | `{d.v:html(inline)}` |
+| `nospace` | Remove empty paragraph added after block elements | `{d.v:html(nospace)}` |
+| `tabletheme:Name` | Apply named Word table theme (DOCX only) | `{d.v:html(tabletheme:GridTable2-Accent3)}` |
+| `headingtheme:prefix` | Use custom heading styles `prefix1`…`prefix6` (themes must already exist in the template) | `{d.v:html(headingtheme:my-theme-)}` |
+
+Combine: `{d.value:html(nospace,headingtheme:my-theme-)}`
+
+### Font and paragraph behaviour
+- HTML content **inherits** font family and size from the template paragraph where the tag is placed
+- Text alignment from the template is **not** retained
+- By default, `:html` renders content in a **new paragraph**. Use `inline` to stay in the current paragraph
+- Tab characters: use `&ensp;` or `&emsp;` — do NOT use `&#9;` (collapsed to space by HTML parsers)
+
+### HTML entities (v5.5.0+)
+The `:html` formatter supports named, decimal, and hexadecimal HTML entities:
 - Named: `&amp;` `&copy;` `&nbsp;`
 - Decimal: `&#169;` `&#128512;`
 - Hexadecimal: `&#xA9;` `&#x1F600;`
 - Emoji supported as literal Unicode or numeric entities
-- Avoid `&#9;` for tabs — use `&ensp;` or `&emsp;` instead (HTML parsers collapse `&#9;` to a single space)
+
+### Common patterns
+
+**Wrap dynamic HTML content before rendering** — `:prepend` and `:append` operate on the raw string; `:html` then renders the assembled result. Order matters — reversing it would render HTML before the wrapper tags are added:
+```
+{d.htmlContent:prepend('<ul>'):append('</ul>'):html}
+```
+
+**Choose between HTML blocks via a condition** — `:show` / `:elseShow` select which raw HTML to render, then `:html` renders the chosen branch:
+```
+{d.displayNote:ifEQ(true):show(d.noteSection):elseShow(d.nothingSection):html}
+{d.isAdmin:ifEQ(true):show(d.adminPanel):elseShow(d.userPanel):html}
+{d.showComment:ifEQ(true):show(.comment):elseShow(''):html}
+```
+
+**Render plain-text line breaks as HTML breaks** — chain `:convCRLF` before `:html` so `\n` becomes `<br>`:
+```
+{d.notes:convCRLF:html}
+```
+
+**Fallback URL for embedded links** — place `:defaultURL` before `:html`:
+```
+{d.content:defaultURL(.urlOnError):html}
+```
 
 ---
 

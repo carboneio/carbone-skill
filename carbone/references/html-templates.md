@@ -104,18 +104,7 @@ Inject entire CSS properties or full style attributes:
 
 ### 2. Inject HTML blocks with `:html`
 
-Without `:html`, `<` and `>` are escaped. Use `:html` to render raw HTML from JSON data:
-
-```html
-{d.noteSection:html}
-{d.displayNote:ifEQ(true):show(d.noteSection):elseShow(d.nothingSection):html}
-{d.isAdmin:ifEQ(true):show(d.adminPanel):elseShow(d.userPanel):html}
-```
-
-Inject dynamic HTML comment:
-```html
-{d.showComment:ifEQ(true):show(.comment):elseShow(''):html}
-```
+Without `:html`, `<` and `>` are escaped. Use `:html` to render raw HTML from JSON data — full reference, supported elements, CSS, options, and common patterns → `references/advanced-features.md` "`:html` Formatter — Full Reference".
 
 ### 3. Smart conditions — `:drop` / `:keep`
 

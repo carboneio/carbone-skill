@@ -14,8 +14,8 @@ user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.3.3"
-  carbone_version: "5.6.1"
+  version: "1.4.0"
+  carbone_version: "5.8.0"
   repository: https://github.com/carboneio/carbone-skill
 ---
 
@@ -66,7 +66,7 @@ Search the first matching item by attribute value:
 {d.subArray[sub.b.c=.other].text}       ← variable filter (starts with .)
 {d.movies[year=1999]..country}          ← access parent via ..
 ```
-If the filter returns multiple rows, Carbone keeps only the **first** match.
+If the filter returns multiple rows, Carbone keeps only the **first** match. Equality is **loose**: `[year=1999]` matches both numeric `1999` and the string `'1999'` (loop filters always; array search and lookup since v5.7.0).
 
 ---
 
@@ -308,12 +308,7 @@ Carbone supports 107 barcode types. If the barcode value is missing or invalid, 
 For full scope/type tables, limitations, and `:bindColor` (legacy) → read `references/advanced-features.md`.
 
 ### 8d. HTML content rendering (ENTERPRISE, v5+)
-`:html` converts an HTML string to native document formatting (ODT/DOCX/HTML/PDF):
-```
-{d.richContent:html}
-{d.notes:convCRLF:html}    ← convert \n to <br> first
-```
-Options: `html(inline)`, `html(nospace)`, `html(tabletheme:Name)` (DOCX), `html(headingtheme:prefix-)` (DOCX). Page breaks via `style="break-before:page"` (requires `{o.preReleaseFeatureIn=5002000}`). Full options → `references/advanced-features.md`.
+`:html` renders an HTML string as native document formatting in ODT, DOCX, and HTML templates (PDF reached via conversion). Quick example: `{d.richContent:html}` or `{d.notes:convCRLF:html}` (convert `\n` to `<br>` first). For supported elements, CSS, options, page breaks, entities, and common patterns → `references/advanced-features.md` "`:html` Formatter — Full Reference".
 
 ### 8e. Hyperlinks (ENTERPRISE, v3+)
 Set the URL of a hyperlink (in your editor) to a Carbone tag, e.g. `{d.url}`. Works in DOCX, XLSX, PPTX, ODT, ODS, ODP, ODG. Use `:defaultURL('fallback')` if the URL may be invalid. Edge cases (XLSX syntax, mixed URLs) → `references/advanced-features.md`.
@@ -334,11 +329,11 @@ Attach a file inside a PDF (Factur-X, ZUGFeRD):
 {d.xmlUrl:attachFile('invoice.xml', 'text/xml')}
 ```
 
-**`:appendTemplate(templateIdOrVersionId, position?)`** (v5.0.3+) — generate another stored template with the current data and append its PDF output. Each iterated array item becomes the root `{d.}` of the nested template. All render options are forwarded automatically. The tag prints nothing.
+**`:appendTemplate(templateIdOrVersionId, position?)`** (v5.0.3+) — generate another stored template with the current data and append its PDF output. Each iterated array item becomes the root `{d.}` of the nested template. The tag prints nothing.
 ```
-{d.myArray[i]:appendTemplate(110212)}
-{d.myArray[i+1]}
+{d.orders[i]:appendTemplate(110212)} {d.orders[i+1]}
 ```
+**PDF output only** — silently ignored if the final render format is DOCX/XLSX/ODT/etc. Only the following render options are forwarded to the nested template: `lang`, `currency`, `enum`, `converter`, `translations`, and complement data (`{c.}`). Other options (`timezone`, `hardRefresh`, `useHighPrecisionArithmetic`, `exportFormattedValuesAsText`, `preReleaseFeatureIn`, …) are **not** forwarded. A nested template cannot itself call `:appendTemplate` (no recursion).
 
 ### 8h. Digital signatures (ENTERPRISE, BETA — v5+)
 Places a signature field. Tag prints nothing; returns position coordinates in the API response:
@@ -401,7 +396,7 @@ Only the font style and size of the **first `{` character** applies to the outpu
 - **PDF with high styling control**: use HTML — full CSS, custom paper size, margins, headers/footers via `<carbone-pdf-options>`
 - **PDF from a document template**: use DOCX or ODT — better pagination, text overflow handling
 - **Presentations**: PPTX uses absolute positioning — loops don't auto-create new slides; paginate manually with filters. ODP (LibreOffice) supports dynamic slide creation
-- **Spreadsheets**: formulas recalculate after Carbone injection; use `:formatN` so tags output native numbers not strings
+- **Spreadsheets**: formulas recalculate after Carbone injection; use `:formatN` so tags output native numbers not strings — this is also how percentage/currency/date cell formats apply (`:formatN` is the only way to force native-number output in XLSX/ODS; see `references/xlsx-tips.md`)
 
 ### XLSX/ODS — formula rules
 Carbone tags and Excel formulas must be in **separate cells**. For totals after loop injection, prefer Carbone aggregators: `{d.items[].qty:aggSum:formatN}`. For `INDIRECT`+`ROW` and `MATCH`/`INDEX` patterns → read `references/xlsx-tips.md`.
@@ -493,7 +488,8 @@ Read these when the user's question goes beyond what SKILL.md covers:
 - `references/runtime-options.md` — all `{o.}` options with descriptions and version requirements. Read when user asks about timezone, lang, converter, or pre-release flags.
 - `references/advanced-features.md` — full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT forms, native charts. Read when user asks about color formatting, SVG, ODT forms, or ECharts.
 - `references/xlsx-tips.md` — computing totals in Excel/ODS when Carbone injects rows: `INDIRECT`+`ROW`, aggregators, `MATCH`/`INDEX`. Read when user asks about Excel formulas in spreadsheet templates.
+- `references/docx-tips.md` — DOCX/ODT header/body/footer section rules, cross-section loop values, the floating-text-box pattern. Read when user asks about tags in Word headers/footers or a "missing i+1" error in a header.
 - `references/upgrade-guide.md` — upgrading Carbone versions: breaking changes, `carbone-version` header, `templateId` vs `versionId`. Read when user asks about upgrading or migration.
 - `references/practical-examples.md` — real-world combinations: conditional visibility (optional blocks, table/row hiding, NaN guard, range checks, checkboxes), date formatting, aggregation patterns, complement data, chained formatters, `..` in formatter args. Read when user asks for practical examples, real-world patterns, or complex conditional logic.
 
-Official docs: https://carbone.io/documentation/design/overview/getting-started.html
+Official docs: https://carbone.io/documentation/design/overview/getting-started.html (HTML) · https://carbone.io/llms.txt (LLM-friendly index) · https://carbone.io/llms-full.txt (single-file for verification & diffs)

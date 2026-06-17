@@ -1,6 +1,20 @@
 # Carbone XLSX/ODS — Formula Tips
 
-Read this file when the user asks about dynamic Excel formulas that survive Carbone row injection, computing totals after a loop, or referencing injected rows with MATCH/INDEX.
+Read this file when the user asks about dynamic Excel formulas that survive Carbone row injection, computing totals after a loop, referencing injected rows with MATCH/INDEX, or why a cell's percentage/currency/date format is not being applied.
+
+---
+
+## Number formats only apply to numeric cells
+
+In XLSX/ODS, the cell's Excel number format (percentage, currency, thousands, date) is applied by the spreadsheet — but **only to native numeric cells**. If Carbone writes the value as text, the format is silently ignored and the raw value is shown verbatim.
+
+A value reaches the cell as text when the JSON field is a string (`"0.032"`), or when `{o.exportFormattedValuesAsText=true}` is set. In XLSX/ODS templates, `:formatN` is the **only** way to force Carbone to write a native number into the cell — arithmetic formatters like `:mul(1)` or `:add(0)` do not change the output type. Once the cell holds a real number, the cell's own format handles display:
+```
+{d.rate:formatN}    ← cell formatted as 0.00%       → 3.20%
+{d.price:formatN}   ← cell formatted as $#,##0.00   → $1,234.50
+```
+
+**The `:formatN` precision argument is ignored in XLSX/ODS.** Because the cell's own number format controls decimal display, `:formatN`, `:formatN(0)`, and `:formatN(2)` all behave identically — Carbone writes the raw native number and lets Excel/Calc format it. If you need a specific number of decimals, set them on the cell format, not on the tag.
 
 ---
 
