@@ -1,6 +1,6 @@
 {
   "name": "carbone-skill",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Official Carbone skill — complete templating language reference covering tags, loops, conditions, formatters, aggregators, and all output formats (DOCX, XLSX, PPTX, ODT, HTML, Markdown, PDF)",
   "license": "Apache-2.0",
   "author": {

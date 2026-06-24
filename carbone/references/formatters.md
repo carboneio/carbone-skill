@@ -260,6 +260,7 @@ Breakdown:
 {d.names:arrayJoin('',1)}    // ["homer","bart","lisa"] > "bartlisa" (skip first)
 {d.names:arrayJoin('',1,1)}  // ["homer","bart","lisa"] > "bart" (1 item from index 1)
 {d.names:arrayJoin('',0,-1)} // ["homer","bart","lisa"] > "homerbart" (all but last)
+{d.names:arrayJoin('\n'):convCRLF} // one item per line in DOCX/PPTX/ODT (join alone prints a literal \n; :convCRLF renders real line breaks)
 ```
 
 **`:arrayMap` examples**:

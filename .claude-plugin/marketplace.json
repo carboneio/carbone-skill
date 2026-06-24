@@ -7,12 +7,12 @@
   },
   "metadata": {
     "description": "Official Carbone skill — complete templating language reference covering tags, loops, conditions, formatters, aggregators, and all output formats (DOCX, XLSX, PPTX, ODT, HTML, Markdown, PDF)",
-    "version": "1.4.0"
+    "version": "1.4.1"
   },
   "plugins": [
     {
       "name": "carbone",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "description": "Enables AI to build fully-featured Carbone templates using verified syntax: tags, loops, conditions, formatters, HTML/Markdown output, and embedding tags into AI-generated DOCX, XLSX, PPTX, ODT, HTML, Markdown, and PDF files.",
       "category": "productivity",
       "homepage": "https://carbone.io",

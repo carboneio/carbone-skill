@@ -14,7 +14,7 @@ user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.4.0"
+  version: "1.4.1"
   carbone_version: "5.8.0"
   repository: https://github.com/carboneio/carbone-skill
 ---
@@ -488,7 +488,7 @@ Read these when the user's question goes beyond what SKILL.md covers:
 - `references/runtime-options.md` — all `{o.}` options with descriptions and version requirements. Read when user asks about timezone, lang, converter, or pre-release flags.
 - `references/advanced-features.md` — full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT forms, native charts. Read when user asks about color formatting, SVG, ODT forms, or ECharts.
 - `references/xlsx-tips.md` — computing totals in Excel/ODS when Carbone injects rows: `INDIRECT`+`ROW`, aggregators, `MATCH`/`INDEX`. Read when user asks about Excel formulas in spreadsheet templates.
-- `references/docx-tips.md` — DOCX/ODT header/body/footer section rules, cross-section loop values, the floating-text-box pattern. Read when user asks about tags in Word headers/footers or a "missing i+1" error in a header.
+- `references/docx-tips.md` — DOCX/ODT header/body/footer section rules, cross-section loop values, the floating-text-box pattern, dynamic page break in a loop without a trailing blank page, keeping merged cells inside a table loop, horizontal (newspaper-column) repetition in LibreOffice tables. Read when user asks about tags in Word headers/footers, a "missing i+1" error in a header, page breaks inside loops, merged cells in loops, or horizontal table repetition.
 - `references/upgrade-guide.md` — upgrading Carbone versions: breaking changes, `carbone-version` header, `templateId` vs `versionId`. Read when user asks about upgrading or migration.
 - `references/practical-examples.md` — real-world combinations: conditional visibility (optional blocks, table/row hiding, NaN guard, range checks, checkboxes), date formatting, aggregation patterns, complement data, chained formatters, `..` in formatter args. Read when user asks for practical examples, real-world patterns, or complex conditional logic.
 

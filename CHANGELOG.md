@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1
+- New section (`docx-tips.md`): dynamic page break inside a loop without a trailing blank page — drop the page-break paragraph on the last iteration with `{d.list[i]..list:len:sub(1):ifEQ(.i):drop(p)}` (or the filtered-loop short form `{d.list[i, i=-1]:ifNEM:drop(p)}`); plus the no-tag "Page break before" alternative
+- New section (`docx-tips.md`): keep merged cells inside a table loop — no Carbone tag exists, so nest the looped rows in an inner table while the merged cell stays in the outer table; zero out inner-table cell margins (Word) / padding (LibreOffice)
+- New section (`docx-tips.md`): horizontal (newspaper-column) repetition in a LibreOffice table — a normal vertical loop placed in a multi-column Section with a non-splitting table flows left-to-right; cross-reference to the native bidirectional loop (`loops-advanced.md`) for true 2-D grids in DOCX/HTML/Markdown
+- New example (`formatters.md`): `{d.names:arrayJoin('\n'):convCRLF}` to print an array of strings one per line in DOCX/PPTX/ODT (join alone prints a literal `\n`; `:convCRLF` renders real line breaks)
+- `docx-tips.md` trigger line and `SKILL.md` reference-list entry updated with the new page-break / merged-cell / horizontal-repetition topics
+
 ## 1.4.0
 - New reference file `docx-tips.md`: DOCX/ODT header/body/footer section rules. Header, body, and footer are independent sections — a Carbone loop must be fully contained within one section; spanning `[i]` and `[i+1]` across sections triggers a "missing i+1" error
 - New recipe (`docx-tips.md`): three patterns for displaying a body-loop value in a header or footer — direct aggregator in the target section, `:set(c.X)` round-trip read globally, or floating-text-box hack (officially recommended by Carbone) with the anchor staying in the loop's section and only the visual position moved over the target section
