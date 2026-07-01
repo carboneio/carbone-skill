@@ -107,11 +107,11 @@ The outer cell never loops, so its merge survives; only the inner table repeats.
 
 ## Horizontal repetition in a LibreOffice table (newspaper-column flow)
 
-**Use a normal vertical loop — there is no "horizontal loop" tag.** In LibreOffice Writer/ODT, a multi-column Section makes a vertical loop flow left-to-right across the page.
+This flows a flat list **down the page across newspaper-style columns** — a page-layout effect, not a table growing sideways. It uses a normal **vertical** loop inside a multi-column Section; the Section (not a tag) creates the left-to-right flow. In LibreOffice Writer/ODT:
 
 1. Insert → Section → Columns tab → set the column count to the max items you want per row.
 2. Inside the section, insert a one-row table with a standard loop: `{d.items[i].name}` … `{d.items[i+1].name}`.
 3. Table Properties → Text Flow → **uncheck** "Allow table to split across pages and columns" (keeps each block whole so it flows into the next column).
 4. Optional: a second section above for fixed column titles.
 
-For a true two-dimensional grid (rows **and** columns generated together) in DOCX/HTML/Markdown, use the native bidirectional loop instead → `references/loops-advanced.md` "Bidirectional loop".
+To grow a **table** sideways (one column per item) — a real tag pattern that works in any format — see `references/loops-advanced.md` "Horizontal loop". For a two-dimensional grid (rows **and** columns at once), use the bidirectional loop → same file, "Bidirectional loop".

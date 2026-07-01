@@ -14,8 +14,8 @@ user-invocable: true
 license: Apache-2.0
 metadata:
   author: carboneio
-  version: "1.4.1"
-  carbone_version: "5.9.0"
+  version: "1.5.0"
+  carbone_version: "5.9.1"
   repository: https://github.com/carboneio/carbone-skill
 ---
 
@@ -38,11 +38,11 @@ Carbone is a **declarative** templating engine. You provide a template (DOCX, XL
 | `{#alias = d.path}` | Declare an alias shortcut (removed from output) |
 | `{$alias}` | Use a declared alias |
 | `{t(key)}` | Static i18n translation tag — no quotes needed, whitespace preserved |
-| `{o.option=value}` | Carbone runtime option (removed from output) |
+| `{o.option=value}` | Carbone in-template option (removed from output) |
 
 ### Special `{o.}` options
 Common: `{o.timezone=Europe/Paris}` `{o.lang=en-US}` `{o.converter=L}` `{o.useHighPrecisionArithmetic=true}` `{o.exportFormattedValuesAsText=true}` (XLSX only) `{o.hardRefresh=true}` (force converter even when input/output format match — useful for XLSX formula refresh) `{o.preReleaseFeatureIn=VERSION}` (opt-in pre-release features).
-Full option list → `references/runtime-options.md`.
+Full in-template option list → `references/in-template-options.md`.
 
 ---
 
@@ -444,7 +444,7 @@ When asked to validate a Carbone tag, check:
 5. **Formatter separator** — `:` not `.` or `|`
 6. **Formatter argument quoting** — arguments may be written with or without single quotes: `:formatD(DD/MM/YYYY)` and `:formatD('DD/MM/YYYY')` are both valid, as are `:convEnum(STATUS)` and `:convEnum('STATUS')`. Single quotes are **required** only when the argument contains a **space** — Carbone trims unquoted spaces (see item 19). Double quotes are never valid (see item 18)
 7. **Formatters must be chained, not nested** — `{d.value:add(20):sub(10)}` ✅ — `{d.value:add(20:sub(10))}` ❌ (nesting doesn't work)
-8. **Loop end-marker** — every `[i]` block must have its `[i+1]` end-marker row
+8. **Loop end-marker** — every `[i]` block needs a matching `[i+1]`. **Vertical** loop (grows down): one `[i+1]` **row** closes the whole block (§4a). **Horizontal** loop (grows sideways): detected per-row, so **each** `[i]` tag needs its own `[i+1]` in the column to its right — one marker is not enough (see `references/loops-advanced.md` "Horizontal loop")
 9. **`showBegin/showEnd` and `hideBegin/hideEnd` must always be paired** — a missing `showEnd` will break the document
 10. **Never interleave two loops** — this corrupts the document:
     ```
@@ -485,7 +485,7 @@ Read these when the user's question goes beyond what SKILL.md covers:
 - `references/set-patterns.md` — advanced `:set` patterns: dynamic URLs, type conversion, JSON restructuring, list grouping, N-column pagination, dynamic object keys. Read when user needs complex data transformation or multi-step `:set`.
 - `references/html-templates.md` — inline CSS injection, `:chart`, barcodes, `<carbone-pdf-header/footer>`, page breaks, `<carbone-pdf-options>`. Read when user asks about HTML templates, CSS, PDF options.
 - `references/markdown-templates.md` — Markdown table loops, limitations, convert to PDF/DOCX/ODT. Read when user asks about Markdown templates.
-- `references/runtime-options.md` — all `{o.}` options with descriptions and version requirements. Read when user asks about timezone, lang, converter, or pre-release flags.
+- `references/in-template-options.md` — all `{o.}` in-template options with descriptions and version requirements. Read when user asks about timezone, lang, converter, or pre-release flags.
 - `references/advanced-features.md` — full `:color` reference, `:html` options and page breaks, hyperlink edge cases, SVG templates, ODT forms, native charts. Read when user asks about color formatting, SVG, ODT forms, or ECharts.
 - `references/xlsx-tips.md` — computing totals in Excel/ODS when Carbone injects rows: `INDIRECT`+`ROW`, aggregators, `MATCH`/`INDEX`. Read when user asks about Excel formulas in spreadsheet templates.
 - `references/docx-tips.md` — DOCX/ODT header/body/footer section rules, cross-section loop values, the floating-text-box pattern, dynamic page break in a loop without a trailing blank page, keeping merged cells inside a table loop, horizontal (newspaper-column) repetition in LibreOffice tables. Read when user asks about tags in Word headers/footers, a "missing i+1" error in a header, page breaks inside loops, merged cells in loops, or horizontal table repetition.

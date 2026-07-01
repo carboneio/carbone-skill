@@ -80,7 +80,7 @@ The Carbone Skill pairs with the [Carbone MCP server](https://carbone.io/documen
 
 ## What the skill covers
 
-- Tag syntax: `{d.}`, `{c.}`, aliases, i18n, runtime options
+- Tag syntax: `{d.}`, `{c.}`, aliases, i18n, in-template options
 - Formatters: date, number, string, currency, and chaining
 - Conditions: `showBegin/showEnd`, `hideBegin/hideEnd`, ternary expressions
 - Loops: arrays, nested loops, aggregation, drop-row patterns

@@ -65,8 +65,8 @@ All formatters below are verified from official Carbone documentation. Do NOT us
 | `:floor` | v4.22.8+ | Round down to nearest integer | `1.05:floor` → `1` |
 | `:int` | v1.0.0+ | Convert to integer (UNRECOMMENDED) — use `:add(0)`, `:sub(0)`, `:mul(1)`, or `:abs` to coerce a numeric string to a real number (works for floats too) | — |
 | `:toFixed` | v1.0.0+ | Fixed decimal string (UNRECOMMENDED) — use `:round(precision)` instead | — |
-| `:toEN` | v1.0.0+ | English number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=en-US}` runtime option | — |
-| `:toFR` | v1.0.0+ | French number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=fr-FR}` runtime option | — |
+| `:toEN` | v1.0.0+ | English number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=en-US}` in-template option | — |
+| `:toFR` | v1.0.0+ | French number format (UNRECOMMENDED) — use `:formatN` with `lang` set via the API or `{o.lang=fr-FR}` in-template option | — |
 
 **Math formula in formatters** — `add`, `mul`, `sub`, `div` accept simple expressions:
 ```

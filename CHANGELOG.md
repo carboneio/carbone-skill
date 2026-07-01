@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0
+- New section (`loops-advanced.md`): horizontal loop — grow a table sideways (one column per array item) by placing `[i]` in one column and its `[i+1]` end-marker in the column immediately to its right; format-agnostic (DOCX, ODT, XLSX, ODS, PPTX, HTML, Markdown). Key rule: unlike a vertical loop (a single `[i+1]` row closes the whole block), a horizontal loop is detected per row, so every row containing an `[i]` tag needs its own `[i+1]` marker — otherwise Carbone throws `has no corresponding [i+1]`
+- `SKILL.md` validation checklist item 8 (loop end-marker): now distinguishes the vertical rule (one `[i+1]` row closes the block) from the horizontal rule (one `[i+1]` per `[i]` tag), with pointers to §4a and the new horizontal-loop section
+- Fixed cross-file contradiction (`docx-tips.md`): the newspaper-column section no longer claims "there is no horizontal loop tag" — it is now scoped to its page-layout use case (a flat list flowing down page columns) and cross-links both the real horizontal-loop tag pattern and the bidirectional loop
+- `loops-advanced.md` trigger line updated to route "horizontal loops" questions to the file
+- Updated tracked Carbone version to v5.9.1 (no new templating features)
+- Terminology: renamed "runtime options" → "in-template options" across the skill (`SKILL.md`, `formatters.md`, `README.md`) and renamed the reference file `references/runtime-options.md` → `references/in-template-options.md`
+
 ## 1.4.1
 - New section (`docx-tips.md`): dynamic page break inside a loop without a trailing blank page — drop the page-break paragraph on the last iteration with `{d.list[i]..list:len:sub(1):ifEQ(.i):drop(p)}` (or the filtered-loop short form `{d.list[i, i=-1]:ifNEM:drop(p)}`); plus the no-tag "Page break before" alternative
 - New section (`docx-tips.md`): keep merged cells inside a table loop — no Carbone tag exists, so nest the looped rows in an inner table while the merged cell stays in the outer table; zero out inner-table cell margins (Word) / padding (LibreOffice)

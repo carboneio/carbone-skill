@@ -1,6 +1,6 @@
 # Carbone Loops — Advanced Reference
 
-Advanced loop patterns. Read this file when the user asks about: filtering with negative index or OR logic, bidirectional loops, sorting, distinct values, lookup (JOIN), parallel loops, loops on primitive arrays or nested arrays, object attribute search, or row repetition.
+Advanced loop patterns. Read this file when the user asks about: filtering with negative index or OR logic, bidirectional or horizontal loops, sorting, distinct values, lookup (JOIN), parallel loops, loops on primitive arrays or nested arrays, object attribute search, or row repetition.
 
 ---
 
@@ -30,6 +30,20 @@ Creates rows AND columns simultaneously:
 {d.cars[i].models[i]}  {d.cars[i].models[i+1]}
 {d.cars[i+1].models[i]}
 ```
+
+---
+
+## Horizontal loop (grow a table sideways)
+A normal table loop grows **downward** — `[i]` in one row, the `[i+1]` end-marker in the row below. To grow **sideways** (one new **column** per item), put `[i]` in one column and the `[i+1]` end-marker in the column immediately to its right, on the same row. Format-agnostic — works in any table (DOCX, ODT, XLSX, ODS, PPTX, HTML, Markdown):
+```
+{d.products[i].name}    {d.products[i+1].name}
+{d.products[i].price}   {d.products[i+1].price}
+```
+⚠️ **One `[i+1]` per `[i]` tag.** A vertical loop closes with a single `[i+1]` row for the whole block; a horizontal loop is detected **per row**, so every row containing an `[i]` tag needs its own `[i+1]` marker in the adjacent column. Miss one and Carbone throws:
+```
+The marker {d.products[i].price} has no corresponding [i+1] for array "products".
+```
+The end-marker can be the bare `{d.products[i+1]}` (attributes after `[i+1]` are ignored — see SKILL.md item 20), but it must appear once per `[i]` tag. To grow rows **and** columns at once from nested arrays, see "Bidirectional loop" above.
 
 ---
 
